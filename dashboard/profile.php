@@ -49,6 +49,13 @@
   			<td>Headshot</td>
   		</tr>
 	</table>
+	<!-- The following need to be delete after PHP implementation. -->
+	<div class="form-group">
+		<div class="col-sm-offset-1 col-sm-10">
+			Note1: Current DB Design wouldn't let a faculty edit his or her profile in FACULTY table. 
+					Since current DB Design, assume only instance of ADMIN can Create, Read, Update, delete FACULTY table.<br>	
+		</div>
+	</div>
 	<div class="col-sm-offset-0 col-sm-10">
 	<br/>
 		<button type="submit" class="btn btn-primary btn-lg">

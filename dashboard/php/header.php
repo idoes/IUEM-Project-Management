@@ -51,6 +51,7 @@
     
 <?php
 	//TODO: write command to check variable $_SESSION(‘ACCESS_LEVEL’)
+	//From Cong: 
 		//if == 'SUPER_ADMIN', load this:
 	        // <div class="col-sm-3 col-md-2 sidebar">
 	          // <ul class="nav nav-sidebar">
@@ -68,10 +69,18 @@
 ?>
 
 <!-- Remove this after PHP implementation is complete -->
+<!-- Which part to be removed? Assume the following list items, then why? -->
 <div class="col-sm-3 col-md-2 sidebar">
   <ul class="nav nav-sidebar">
+    <!-- The functionality of Creating Database user is performed by Super Administrator.
+    If this is the case, then we are not dealing with profile scale of information. 
+    Simply reduce the scale which createDBUser.php is performing. -->
     <li><a href="createUser.php">Create User</a></li>
     <li><a href="manageUsers.php">Manage Users</a></li>
+    <li><a href="createDBUser.php">Create Database User</a></li>
+    <li><a href="#">Manage Database User</a></li>
+    <li><a href="#">Create Faculty</a></li>
+    <li><a href="#">Manage Faculty</a></li>
     <li><a href="createProject.php">Create Project</a></li>
     <li><a href="manageProjects.php">Manage Projects</a></li>
 </div>

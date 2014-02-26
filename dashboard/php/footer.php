@@ -5,6 +5,7 @@
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/docs.min.js"></script>
     <script src="../dashboard/js/script.js"></script>
+    <script src="../dashboard/js/coProjectInspector.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
   </body>
 </html>
