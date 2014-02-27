@@ -75,10 +75,11 @@
     <!-- The functionality of Creating Database user is performed by Super Administrator.
     If this is the case, then we are not dealing with profile scale of information. 
     Simply reduce the scale which createDBUser.php is performing. -->
-    <li><a href="createUser.php">Create Faculty</a></li>
+    <li><a href="createUser.php">Create User</a></li>
     <li><a href="manageUsers.php">Manage Users</a></li>
-    <li><a href="createDBUser.php">Create Database User</a></li>
-    <li><a href="#">Manage Database User</a></li>
+    <li><a href="createAdminUser.php">Create Administrator User</a></li>
+    <li><a href="#">Manage Administrator User</a></li>
+    <li><a href="#">Create Faculty</a></li>
     <li><a href="#">Manage Faculty</a></li>
     <li><a href="createProject.php">Create Project</a></li>
     <li><a href="manageProjects.php">Manage Projects</a></li>
