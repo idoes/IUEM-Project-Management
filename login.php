@@ -30,14 +30,15 @@
 
     <div class="container">
 
-      <form class="form-signin" role="form">
+      <form class="form-signin" role="form" id='login-form'>
         <h2 class="form-signin-heading">Please sign in</h2>
         <input type="email" class="form-control" placeholder="Email address" required autofocus>
         <input type="password" class="form-control" placeholder="Password" required>
-        <label class="checkbox">
-          <input type="checkbox" value="remember-me"> Remember me
-        </label>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <select name="user-type" form="login-form" class="form-control">
+ 		<option value="faculty">Faculty</option>
+ 		<option value="admin">Admin</option>
+	 </select><br/>
+        <button class="btn btn-lg btn-primary btn-block" href='dashboard/dashboard.php'> <!--type="submit"-->Sign in</button>
       </form>
 
     </div> <!-- /container -->

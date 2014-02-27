@@ -6,7 +6,7 @@
     </div>
     
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-	<form action="createUser.php" class="form-horizontal" role="form" method="post">
+	<form action="createUser.php" class="form-horizontal" role="form" method="post" id="create-user-post">
 			<div class="form-group">
 				<label for="firstname" class="col-sm-1 control-label">First Name:</label>
 				<div class="col-sm-4">
@@ -66,15 +66,15 @@
 					Note:  Faculty can edit all of these fields after account creation.
 				</div>
 			</div>
-			<div class="form-group">
-				<div class="col-sm-offset-1 col-sm-10">
-					<br/>
-					<button type="submit" class="btn btn-primary">
-						Create User
-					</button>
-				</div>
-			</div>
 	</form>
+			<div class="form-group">
+			<div class="col-sm-offset-1 col-sm-10">
+				<br/>
+				<button onclick="validateUserPanel();"class="btn btn-primary">
+					Create User
+				</button>
+			</div>
+		</div>
     </div>
 
 	</div>
