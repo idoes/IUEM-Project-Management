@@ -58,9 +58,13 @@
 				</div>
 				</div>
 			</div>
-			<input type='button' value='Add Co-PI' id='addButton' />
-    		<input type='button' value='Remove Co-PI' id='removeButton' />
 			<div class="form-group">
+				<div class="col-sm-offset-1 col-sm-4">
+			<input type='button' class='btn btn-primary' value='Add Co-PI' id='addButton' />
+    			<input type='button' class='btn btn-primary' value='Remove Co-PI' id='removeButton' />
+				</div>
+			</div>
+			<div class="form-group"><br/>
 				<div class="col-sm-offset-1 col-sm-4">
 					Note:  Once a project has been created, you can assign team members, upload files, and make changes to the above fields again.<br>
 					Issue1: Co-Inspector layout.<br>

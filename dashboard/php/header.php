@@ -78,9 +78,9 @@
     <li><a href="createUser.php">Create User</a></li>
     <li><a href="manageUsers.php">Manage Users</a></li>
     <li><a href="createAdminUser.php">Create Administrator User</a></li>
-    <li><a href="#">Manage Administrator User</a></li>
-    <li><a href="#">Create Faculty</a></li>
-    <li><a href="#">Manage Faculty</a></li>
+    <li><a href="manageAdmins.php">Manage Administrator User</a></li>
+    <!--li><a href="#">Create Faculty</a></li>
+    <li><a href="#">Manage Faculty</a></li-->
     <li><a href="createProject.php">Create Project</a></li>
     <li><a href="manageProjects.php">Manage Projects</a></li>
 </div>

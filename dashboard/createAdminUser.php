@@ -88,7 +88,7 @@
 		}
 		
 		//validate text box input 4 - Email qualify
-		if(emailAddressCheck($email) == flase)
+		if(emailAddressCheck($email) == false)
 		{
 			$interactiveMessage = $interactiveMessage . "Email is not an valid Email Address.<br>";
 		}
@@ -97,8 +97,10 @@
 			$emailIsOk = true;
 		}
 		
+		$interactiveMessage.="<br/><br/>";
+
 		// Checking passed
-		if ($unameok && $pwdok && $agreeok) {
+		if ($firstNameIsOk && $lastNameIsOk && $passwordIsOk && $emailIsOk) {
 			//you will enter data into the database here
 		
 			//now send the email to the username registered for activating the account
@@ -211,7 +213,7 @@
 				<div class="col-sm-offset-1 col-sm-10">
 					<br/>
 					<!-- use input instead button -->
-					<input type="submit" name="formSubmit" value="Create Administrator User" />
+					<input type="submit" class='btn btn-primary' name="formSubmit" value="Create Administrator User" />
 					<!--  
 					<button type="submit" class="btn btn-primary" name="formSubmit">
 						Create Database User
