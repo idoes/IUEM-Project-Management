@@ -41,8 +41,8 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="profile.php">Profile</a></li>
-            <li><a href="help.php">Help</a></li>
+            <li><a href="#" onclick="loadPage('profile');">Profile</a></li>
+            <li><a href="#" onclick="loadPage('help');">Help</a></li>
           	<li><img src="../assets/ico/iu_ico.png" style="padding-right: 20px; padding-left: 15px;"></img></li>
           </ul>
         </div>
@@ -75,13 +75,13 @@
     <!-- The functionality of Creating Database user is performed by Super Administrator.
     If this is the case, then we are not dealing with profile scale of information. 
     Simply reduce the scale which createDBUser.php is performing. -->
-    <li><a href="createUser.php">Create User</a></li>
-    <li><a href="manageUsers.php">Manage Users</a></li>
-    <li><a href="createAdminUser.php">Create Administrator User</a></li>
-    <li><a href="manageAdmins.php">Manage Administrator User</a></li>
+    <li><a href="#" onclick="loadPage('create-user');">Create User</a></li>
+    <li><a href="#" onclick="loadPage('manage-users');">Manage Users</a></li>
+    <li><a href="#" onclick="loadPage('create-admin');">Create Administrator User</a></li>
+    <li><a href="#" onclick="loadPage('manage-admins');">Manage Administrator User</a></li>
     <!--li><a href="#">Create Faculty</a></li>
     <li><a href="#">Manage Faculty</a></li-->
-    <li><a href="createProject.php">Create Project</a></li>
-    <li><a href="manageProjects.php">Manage Projects</a></li>
+    <li><a href="#" onclick="loadPage('create-project');">Create Project</a></li>
+    <li><a href="#" onclick="loadPage('manage-projects');">Manage Projects</a></li>
 </div>
 <!-- // -->
