@@ -1,10 +1,42 @@
 <?php
 	include_once('./php/header.php');
 	include_once('./inc/utilityFunction.php');
+	require_once "mail/mail.class.php";
+	require_once "dbconnect.php";
 	
 	//always initialized variables to be used
 	$interactiveMessage = "";
-
+	$password 			= "";
+	//password is generated for user and send to user's email for activation purpose
+	//The given password is exactly 12 in length, contaning mixed Captical English Letter and single digit
+	$password 	= randomCodeGenerator(12);
+	
+	
+	/*
+	 * send Email
+	*/
+	function sendEmail($emailAddress, $firstName)
+	{
+		global $interactiveMessage;
+		//now send the email to the username registered for activating the account
+		//$code = randomCodeGenerator(50);
+		$code = randomCodeGenerator(50);
+		$subject = "Email Activation";
+			
+		$body = 'Your code is '.$code.
+		'<br>Please click the following link in order to finish registration preocess<br>'.
+		'http://corsair.cs.iupui.edu:22071/lab4/login.php?theQueryString='.$code;
+		$mailer = new Mail();
+	
+		if (($mailer->sendMail($emailAddress, $firstName, $subject, $body)) == true)
+			$interactiveMessage .= "A welcome message has been sent to the address. He or she have futher instrunction 
+									in order to activate his or her account";
+		else $interactiveMessage .= "Email not sent. " . $emailAddress.' '. $firstName.' '. $subject.' '. $body;
+	
+		return $code;
+	}
+	
+	
 	
 ?>   
 <?php 
@@ -13,7 +45,6 @@
 	$firstName 			= "";
 	$lastName			= "";
 	$middleName 		= "";
-	$password 			= "";
 	$email				= "";
 
 	if(isset($_POST['formSubmit']))
@@ -23,7 +54,6 @@
 		$firstName 	= trim($_POST['firstname']);
 		$lastName	= trim($_POST['lastname']);
 		$middleName = trim($_POST['middlename']);
-		$password 	= trim($_POST['password']);	
 		$email		= trim($_POST['email']);
 		
 		$firstNameIsOk 	= false;
@@ -97,12 +127,107 @@
 			$emailIsOk = true;
 		}
 		
+		//validate text box input 5 - SQL Injection
+		//first escapse all the strings so that backslashes are added before the following characters: \x00, \n, \r, \, ', " and \x1a.
+		//This is used to prevent sql injections.
+		//$firstName 			= mysql_real_escape_string($firstName);
+		//$lastName			= mysql_real_escape_string($lastName);
+		//$middleName 		= mysql_real_escape_string($middleName);
+		//$password 			= mysql_real_escape_string($password);
+		//$email				= mysql_real_escape_string($email);
+		
+		
 		$interactiveMessage.="<br/><br/>";
 
 		// Checking passed
-		if ($firstNameIsOk && $lastNameIsOk && $passwordIsOk && $emailIsOk) {
+		if ($firstNameIsOk && $lastNameIsOk && $passwordIsOk && $emailIsOk) 
+		{
 			//you will enter data into the database here
-		
+			/*************************************************************
+			* Database activities - check Whether the Record has already occur
+			*************************************************************/
+			//1st check if the EmailAddress already exists in the database
+			$sqlCountAdmin = "SELECT COUNT(*) AS COUNTER FROM A_ADMIN WHERE Email = '" . $email. "';";
+			//test
+			//print "$sqlCountAdmin<br>";
+			//send the query to the database or quit if cannot connect || hold the result set
+			$result = mysql_query($sqlCountAdmin, $conn) or die(mysql_error());
+			//the query results are objects, in this case, one object
+			$field = mysql_fetch_object($result);
+			$count = $field -> COUNTER;
+			//test
+			print "Email Record occur as counter: $count <br>";
+			
+			
+			
+			
+			/*************************************************************
+			 * Database activities - the Record has already occur
+			*************************************************************/
+			if ($count != 0)
+			{
+				//to check IsActive or not
+				$sqlIsActive = "SELECT IsActive AS IS_ACTIVE FROM A_ADMIN WHERE Email = '" . $email. "';";
+				$resultIsActive = mysql_query($sqlIsActive, $conn) or die(mysql_error());
+				$returnObject= mysql_fetch_object($resultIsActive);
+				$isActive = $returnObject -> IS_ACTIVE;
+				//test
+				print "$isActive<br>";
+				
+				if($isActive === "NO")
+				{
+					//generate new activation code
+					//send emial with actication code again
+					//send Email
+					$activationCode2 = sendEmail($email, $firstName);
+					//test
+					print "ActivationCode2: $activationCode2<br>";
+					//Upgrade ADIMN.ActivationCode
+					$sqlUpgradeACode = "UPDATE A_ADMIN
+										SET ActivationCode = '$activationCode2' 
+										WHERE Email = '$email';";
+				}
+				else 
+				{
+					$interactiveMessage = $interactiveMessage . "The created user has record in Database and has been activated by himself or herself.";
+				}
+
+			}//end if ($count != 0)
+			/*************************************************************
+			 * Database activities - the Record has NOT already occur
+			*************************************************************/
+			else
+			{
+				//send Email
+				$activationCode = sendEmail($email, $firstName);
+				//test
+				//print "$activationCode<br>";
+				//hash the password
+				//$password = sha1($password);
+			
+				$sql = "INSERT INTO A_ADMIN values(
+							null,
+							'$email',
+							'$password',
+							NOW(),
+							null,
+							'$firstName',
+							'$lastName',
+							'$middleName',
+							'$activationCode',
+							'NO');";
+				//send the query to the database or quit if cannot connect || hold the result set
+				$result = mysql_query($sql, $conn) or die(mysql_error());
+				if ($result)
+				{
+					$interactiveMessage .= "You information has been inserted into Database successfully.";
+				}
+				else 
+				{
+					$interactiveMessage .= "there has some problems during record insertion; please re-insert admin. record again.";
+				}
+			}//end else count == 0
+			
 			//now send the email to the username registered for activating the account
 /*			
 			$code = randomCodeGenerator(30);
@@ -116,7 +241,7 @@
 */				
 			//direct to the next page if necessary
 			//Header ("Location:process.php?fn=".$fn."&ln=".$ln."&g=".$gender."&s=".$state."&b=".$birthYear) ;
-		}
+		}// end if ($firstNameIsOk && $lastNameIsOk && $passwordIsOk && $emailIsOk) 
 		
 		
 	}//end if(isset($_POST['formSubmit']))
@@ -174,7 +299,7 @@
 			<div class="form-group">
 				<label for="password" class="col-sm-1 control-label">Password:</label>
 				<div class="col-sm-4">
-					<input type="text" class="form-control" id="password" placeholder="Password (Required)" name="password">
+					<input type="text" class="form-control" id="password" placeholder="<?php echo $password;?>" name="password" disabled>
 				</div>
 			</div>
 			<!-- see note 4  

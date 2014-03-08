@@ -58,7 +58,8 @@ function characterCheck($theInput)
 /*This function will validate if user created a strong password
  * Longer than 12 characters and alphanumeric letters.
 */
-function pwdValidate($field){
+function pwdValidate($field)
+{
 	$field = trim($field);
 	if (strlen($field) < 12){
 		return false;
@@ -99,8 +100,11 @@ function pwdValidate($field){
 }
 
 
-//This function will sanitize text input from the web form before inserting into the database
-function sqlReplace($text){
+/*
+ * This function will sanitize text input from the web form before inserting into the database
+ */
+function sqlReplace($text)
+{
 
 	$search = array(
 			'@<script[^>]*?>.*?</script>@si',   // Strip out anything between the javascript tags
@@ -116,6 +120,78 @@ function sqlReplace($text){
 
 	return $text;
 }
+
+/* 
+ * Dependent to toChar() function
+ * This function generates a random code with letters and digits.
+ * The paramter tells the how long the code should be.
+*/
+function randomCodeGenerator($length)
+{
+	$code = "";
+	for($i = 0; $i<$length; $i++)
+	{
+		//generate a random number between 1 and 35
+		$r = mt_rand(1,35);
+		//if the number is greater than 26, minus 26 will generate a digit between 0 and 9
+		if ($r > 26) 
+		{
+			$r = $r - 26;
+			$code = $code.$r ;
+		}
+		//it's between 1 and 26, generate a character
+		else 
+		{    
+
+			$code = $code.toChar($r);
+		}
+
+	}
+	return $code;
+
+}
+
+/*
+ * switch a digit to a pre-defined English Letter
+ */
+function toChar($digit)
+{
+	$char = "";
+	switch ($digit)
+	{
+		case 1: $char = "A"; break;
+		case 2: $char = "B"; break;
+		case 3: $char = "C"; break;
+		case 4: $char = "D"; break;
+		case 5: $char = "E"; break;
+		case 6: $char = "F"; break;
+		case 7: $char = "G"; break;
+		case 8: $char = "H"; break;
+		case 9: $char = "I"; break;
+		case 10: $char = "J"; break;
+		case 11: $char = "K"; break;
+		case 12: $char = "L"; break;
+		case 13: $char = "M"; break;
+		case 14: $char = "N"; break;
+		case 15: $char = "O"; break;
+		case 16: $char = "P"; break;
+		case 17: $char = "Q"; break;
+		case 18: $char = "R"; break;
+		case 19: $char = "S"; break;
+		case 20: $char = "T"; break;
+		case 21: $char = "U"; break;
+		case 22: $char = "V"; break;
+		case 23: $char = "W"; break;
+		case 24: $char = "X"; break;
+		case 25: $char = "Y"; break;
+		case 26: $char = "Z"; break;
+		default: "A";
+
+	}
+	return $char;
+}
+
+
 
 
 ?>
