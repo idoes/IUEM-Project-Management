@@ -111,36 +111,56 @@
 		// Checking passed
 		if ($firstNameIsOk && $lastNameIsOk && $passwordIsOk && $emailIsOk)
 		{
-			//TODO
-			/*************************************************************
-			 * DB activity - update DB.Admin by providing admin ID
-			*************************************************************/
 			
-			$sqlUpgradeAdmin = "UPDATE A_ADMIN
-			SET
-			Email			= '$userName',
-			Password		= '$userPassword',
-			FirstName 		= '$firstName',
-			LastName		= '$lastName',
-			MiddleName 		= '$middleName',
-			ActivationCode	= '$activationCode',
-			IsActive		= '$isActivated'
-			WHERE Email = '$userName';";
-			//test
-			//echo "<br>" . $sqlUpgradeAdmin;
-			$resultUpdateAdmin = mysql_query($sqlUpgradeAdmin, $conn) or die(mysql_error());
-			if($resultUpdateAdmin)
+			/*************************************************************
+			 * DB activity - Ensure User name is unique
+			*************************************************************/
+			$sqlCountAdmin = "SELECT COUNT(*) AS COUNTER FROM A_ADMIN WHERE Email = '" . $email. "';";
+			$result = mysql_query($sqlCountAdmin, $conn) or die(mysql_error());
+			$field = mysql_fetch_object($result);
+			$count = $field -> COUNTER;
+
+			if($count != 0)
 			{
-				$interactiveMessage .= "The correponding record has been updated on Database.<br>
-		 							You will be director to a manage admin page in 10 seconds.<br>
-		 							Please do not perform any action on this page.<br>";
-				//TODO uncomment the following statement
-				//header('Refresh: 10; URL=http://corsair.cs.iupui.edu:22071/IUEM2/dashboard/manageAdmins.php');
+				$interactiveMessage .= "<br>User name value is duplicated with others user name.<br>";
 			}
 			else
 			{
-				$interactiveMessage .= "there has some problems during record updating; please re-update admin. record again.<br>";
+				//TODO
+				/*************************************************************
+				 * DB activity - update DB.Admin by providing admin ID
+				*************************************************************/
+					
+				$sqlUpgradeAdmin = "UPDATE A_ADMIN
+				SET
+				Email			= '$userName',
+				Password		= '$userPassword',
+				FirstName 		= '$firstName',
+				LastName		= '$lastName',
+				MiddleName 		= '$middleName',
+				ActivationCode	= '$activationCode',
+				IsActive		= '$isActivated'
+				WHERE Email = '$userName';";
+				//test
+				//echo "<br>" . $sqlUpgradeAdmin;
+				$resultUpdateAdmin = mysql_query($sqlUpgradeAdmin, $conn) or die(mysql_error());
+				if($resultUpdateAdmin)
+				{
+					$interactiveMessage .= "The correponding record has been updated on Database.<br>
+		 							You will be director to a manage admin page in 10 seconds.<br>
+		 							Please do not perform any action on this page.<br>";
+					//TODO uncomment the following statement
+					//header('Refresh: 10; URL=http://corsair.cs.iupui.edu:22071/IUEM2/dashboard/manageAdmins.php');
+				}
+				else
+				{
+					$interactiveMessage .= "there has some problems during record updating; please re-update admin. record again.<br>";
+				}
 			}
+			
+			
+			
+			
 		}// END if ($firstNameIsOk && $lastNameIsOk && $passwordIsOk && $emailIsOk)
 		
 		

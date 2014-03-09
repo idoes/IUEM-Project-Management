@@ -1,5 +1,12 @@
 <?php
 	include_once('./php/header.php');
+	
+	//test
+	print_r($_POST);
+	if(isset($_POST['formSubmit']))
+	{
+		echo "<br>bootstrap button works in terms of input form post method";
+	}
 ?>   
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
       <h1 class="page-header">Create User</h1>
@@ -66,18 +73,24 @@
 					Note:  Faculty can edit all of these fields after account creation.
 				</div>
 			</div>
-	</form>
+	
 			<div class="form-group">
 			<div class="col-sm-offset-1 col-sm-10">
 				<br/>
-				<button onclick="validateUserPanel();"class="btn btn-primary">
+				<!-- use input instead button -->
+				<!-- TODO make your option, technichally either one works.  -->
+				<input type="submit" class='btn btn-primary' name="formSubmit" value="Create Faculty User" />
+				
+				<!--  This one is not working in terms of Form Input Type = submit || help on fix 
+				<button type="submit" value="submit" class="btn btn-primary" id="submit" onclick="validateUserPanel();">
 					Create User
 				</button>
+				-->
 			</div>
-		</div>
+			</div>
+	</form>
     </div>
 
-	</div>
 
 <?php
 	include_once('./php/footer.php');
