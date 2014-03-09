@@ -15,17 +15,19 @@
 	/*
 	 * send Email
 	*/
-	function sendEmail($emailAddress, $firstName)
+	function sendEmail($emailAddress, $firstName, $userName, $password)
 	{
 		global $interactiveMessage;
 		//now send the email to the username registered for activating the account
 		//$code = randomCodeGenerator(50);
 		$code = randomCodeGenerator(50);
 		$subject = "Email Activation";
-			
+		//TODO change the re-direct direcotory || reset password page
 		$body = 'Your code is '.$code.
-		'<br>Please click the following link in order to finish registration preocess<br>'.
-		'http://corsair.cs.iupui.edu:22071/lab4/login.php?theQueryString='.$code;
+				'<br>Your UserName is '.$userName.
+				'<br>Your Password is '.$password.
+				'<br>Please click the following link in order to finish registration preocess<br>'.
+				'http://corsair.cs.iupui.edu:22071/lab4/resetPassword.php?theQueryString='.$code;
 		$mailer = new Mail();
 	
 		if (($mailer->sendMail($emailAddress, $firstName, $subject, $body)) == true)
@@ -172,20 +174,30 @@
 				$returnObject= mysql_fetch_object($resultIsActive);
 				$isActive = $returnObject -> IS_ACTIVE;
 				//test
-				print "$isActive<br>";
+				print "is Active: $isActive<br>";
 				
 				if($isActive === "NO")
 				{
 					//generate new activation code
 					//send emial with actication code again
 					//send Email
-					$activationCode2 = sendEmail($email, $firstName);
+					$activationCode2 = sendEmail($email, $firstName, $email, $password);
 					//test
 					print "ActivationCode2: $activationCode2<br>";
 					//Upgrade ADIMN.ActivationCode
 					$sqlUpgradeACode = "UPDATE A_ADMIN
-										SET ActivationCode = '$activationCode2' 
+										SET ActivationCode = '$activationCode2',
+											Password = '$password' 
 										WHERE Email = '$email';";
+					$resultUpdate = mysql_query($sqlUpgradeACode, $conn) or die(mysql_error());
+					if ($resultUpdate)
+					{
+						$interactiveMessage .= "The new password value and activation code haven been reset.<br>";
+					}
+					else
+					{
+						$interactiveMessage .= "there has some problems during record updating; please re-insert admin. record again.<br>";
+					}
 				}
 				else 
 				{
@@ -199,7 +211,7 @@
 			else
 			{
 				//send Email
-				$activationCode = sendEmail($email, $firstName);
+				$activationCode = sendEmail($email, $firstName, $email, $password);
 				//test
 				//print "$activationCode<br>";
 				//hash the password
@@ -209,7 +221,7 @@
 							null,
 							'$email',
 							'$password',
-							NOW(),
+							null,
 							null,
 							'$firstName',
 							'$lastName',
@@ -349,7 +361,6 @@
 	</form>
     </div>
 
-	</div>
 
 <?php
 	include_once('./php/footer.php');
