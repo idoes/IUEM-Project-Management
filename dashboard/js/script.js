@@ -3,8 +3,24 @@ function init()
     $("#startdate").datepicker();
     $("#enddate").datepicker();
     
+	var direct = getUrlVars()["redirect"];
 	
+	//check if page needs redirect set by some database query
+	if(direct != "")
+	{
+		loadPage(direct);
+	}
+
 }
+
+function getUrlVars() { //credit http://papermashup.com/read-url-get-variables-withjavascript/
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        vars[key] = value;
+    });
+    return vars;
+}
+
 
 function validateUserPanel()
 {

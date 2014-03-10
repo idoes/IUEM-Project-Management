@@ -32,7 +32,7 @@
 	if(isset($_POST['formSubmit']))
 	{
 		//test
-		echo "<br>This is After Submit";
+		//echo "<br>This is After Submit";
 		
 		$userName			= trim($_POST['username']);
 		$userPassword		= trim($_POST['userpassword']);
@@ -115,12 +115,12 @@
 			/*************************************************************
 			 * DB activity - Ensure User name is unique
 			*************************************************************/
-			$sqlCountAdmin = "SELECT COUNT(*) AS COUNTER FROM A_ADMIN WHERE Email = '" . $email. "';";
+			$sqlCountAdmin = "SELECT COUNT(*) AS COUNTER FROM A_ADMIN WHERE Email = '" . $userName. "';";
 			$result = mysql_query($sqlCountAdmin, $conn) or die(mysql_error());
 			$field = mysql_fetch_object($result);
 			$count = $field -> COUNTER;
 
-			if($count != 0)
+			if($count != 1) //change this because there should always be one user with this email, just not more
 			{
 				$interactiveMessage .= "<br>User name value is duplicated with others user name.<br>";
 			}
@@ -146,11 +146,11 @@
 				$resultUpdateAdmin = mysql_query($sqlUpgradeAdmin, $conn) or die(mysql_error());
 				if($resultUpdateAdmin)
 				{
-					$interactiveMessage .= "The correponding record has been updated on Database.<br>
-		 							You will be director to a manage admin page in 10 seconds.<br>
-		 							Please do not perform any action on this page.<br>";
+					$interactiveMessage .= "The correponding record has been updated on Database.<br/>
+		 							You will be directed to the dashboard in 3 seconds.<br/>
+		 							Please do not perform any actions on this page.<br/><br/><br/>";
 					//TODO uncomment the following statement
-					//header('Refresh: 10; URL=http://corsair.cs.iupui.edu:22071/IUEM2/dashboard/manageAdmins.php');
+					header('Refresh: 3; URL=dashboard.php?redirect=manage-admins');
 				}
 				else
 				{
@@ -176,20 +176,20 @@
 		$adminXMLID = $_GET['AdminXMLID'];
 		
 		//test
-		echo "<br>This is First time load";
-		echo "<br>Query String[AdminXMLID]: " . $_GET['AdminXMLID'];
-		echo "<br>Before assign value from XML";
-		echo "<br>Input 1: " . $adminXMLID;
-		echo "<br>Input 2: " . $adminID;
-		echo "<br>Input 3: " . $userName;
-		echo "<br>Input 4: " . $userPassword;
-		echo "<br>Input 5: " . $firstAccessDate;
-		echo "<br>Input 6: " . $lastAccessDate;
-		echo "<br>Input 7: " . $firstName;
-		echo "<br>Input 8: " . $lastName;
-		echo "<br>Input 9: " . $middleName;
-		echo "<br>Input 10: " . $activationCode;
-		echo "<br>Input 11: " . $isActivated;
+		// echo "<br>This is First time load";
+		// echo "<br>Query String[AdminXMLID]: " . $_GET['AdminXMLID'];
+		// echo "<br>Before assign value from XML";
+		// echo "<br>Input 1: " . $adminXMLID;
+		// echo "<br>Input 2: " . $adminID;
+		// echo "<br>Input 3: " . $userName;
+		// echo "<br>Input 4: " . $userPassword;
+		// echo "<br>Input 5: " . $firstAccessDate;
+		// echo "<br>Input 6: " . $lastAccessDate;
+		// echo "<br>Input 7: " . $firstName;
+		// echo "<br>Input 8: " . $lastName;
+		// echo "<br>Input 9: " . $middleName;
+		// echo "<br>Input 10: " . $activationCode;
+		// echo "<br>Input 11: " . $isActivated;
 		
 		
 
@@ -233,18 +233,18 @@
 			
 		
 		//test
-		echo "<br>After assign value from XML";
-		echo "<br>Input 1: " . $adminXMLID;
-		echo "<br>Input 2: " . $adminID;
-		echo "<br>Input 3: " . $userName;
-		echo "<br>Input 4: " . $userPassword;
-		echo "<br>Input 5: " . $firstAccessDate;
-		echo "<br>Input 6: " . $lastAccessDate;
-		echo "<br>Input 7: " . $firstName;
-		echo "<br>Input 8: " . $lastName;
-		echo "<br>Input 9: " . $middleName;
-		echo "<br>Input 10: " . $activationCode;
-		echo "<br>Input 11: " . $isActivated;
+		// echo "<br>After assign value from XML";
+		// echo "<br>Input 1: " . $adminXMLID;
+		// echo "<br>Input 2: " . $adminID;
+		// echo "<br>Input 3: " . $userName;
+		// echo "<br>Input 4: " . $userPassword;
+		// echo "<br>Input 5: " . $firstAccessDate;
+		// echo "<br>Input 6: " . $lastAccessDate;
+		// echo "<br>Input 7: " . $firstName;
+		// echo "<br>Input 8: " . $lastName;
+		// echo "<br>Input 9: " . $middleName;
+		// echo "<br>Input 10: " . $activationCode;
+		// echo "<br>Input 11: " . $isActivated;
 	}
 
 

@@ -66,7 +66,7 @@
 	if(isset($_POST['formSubmit']))
 	{
 		//test
-		echo "<br>This is After Submit";
+		//echo "<br>This is After Submit";
 		
 		/*************************************************************
 		 * Input trimming
@@ -182,7 +182,7 @@
 			$theObject = mysql_fetch_object($resultSqlCountFaculty);
 			$count = $theObject -> COUNTER;
 			
-			if($count != 0)
+			if($count != 1)
 			{
 				$interactiveMessage .= "<br>User name value is duplicated with others user name.<br>";
 			}
@@ -214,10 +214,10 @@
 				if($resultUpdateFaculty)
 				{
 					$interactiveMessage .= "<br>The correponding record has been updated on Database.<br>
-		 							You will be director to a manage admin page in 10 seconds.<br>
-		 							Please do not perform any action on this page.<br>";
+		 							You will be directed to the manage faculty page in 3 seconds.<br>
+		 							Please do not perform any action on this page.<br><br><br><br>";
 					//TODO uncomment the following statement
-					//header('Refresh: 10; URL=http://corsair.cs.iupui.edu:22071/IUEM2/dashboard/manageFaculty.php');
+					header('Refresh: 3; URL=dashboard.php?redirect=manage-users');
 				}
 				else
 				{

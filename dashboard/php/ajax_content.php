@@ -15,7 +15,7 @@
 	{
 echo <<<EOT
    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-      <h1 class="page-header">Create User</h1>
+      <h1 class="page-header">Create Faculty/Staff User</h1>
     </div>
     
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -95,81 +95,141 @@ EOT;
 	}
 	else if($requestedPage == 'manage-users')
 	{
+	require_once("../dbconnect.php");
+	
+	//TODO
+	/*************************************************************
+	 * DB activity - Check SESSION vaiable against DB.ADMIN
+	*************************************************************/
+	
+	
+	/********************************************************************
+	 * Reference - Datbase Faculty Attribute name
+	***********************************************************************/
+	/*
+	 * FacultyID,
+		FirstName,
+		LastName,
+		MiddleName,
+		Email,
+		Title,
+		Position,
+		OfficeLocation,
+		BioText,
+		BioPhotoLink,
+		CVFileLink,
+		UserName,
+		UserPassword,
+		ActivationCode,
+		IsActive,
+		FirstAccessDate,
+		LastAccessDate
+	*/
+	
+	
+	
+	
+	
+	/*************************************************************
+	 * DB activity - Fetch record from DB.ADMIN and build related XML
+	*************************************************************/
+	$sql = "SELECT * FROM A_FACULTY;";
+	$result = mysql_query($sql, $conn) or die(mysql_error());
+	$xml = new SimpleXMLElement('<xml/>');
+	while($row = mysql_fetch_assoc($result))
+	{
+		$facultyInstance = $xml->addChild('FacultyInstance');
+		$facultyInstance->addChild('FacultyID', 		$row['FacultyID']);
+		$facultyInstance->addChild('FirstName', 		$row['FirstName']);
+		$facultyInstance->addChild('LastName',	 		$row['LastName']);
+		$facultyInstance->addChild('MiddleName', 		$row['MiddleName']);
+		$facultyInstance->addChild('Email', 			$row['Email']);
+		$facultyInstance->addChild('Title', 			$row['Title']);
+		$facultyInstance->addChild('Position', 			$row['Position']);
+		$facultyInstance->addChild('OfficeLocation', 	$row['OfficeLocation']);
+		$facultyInstance->addChild('BioText', 			$row['BioText']);
+		$facultyInstance->addChild('BioPhotoLink', 		$row['BioPhotoLink']);
+		$facultyInstance->addChild('CVFileLink', 		$row['CVFileLink']);
+		$facultyInstance->addChild('UserName', 			$row['UserName']);
+		$facultyInstance->addChild('UserPassword', 		$row['UserPassword']);
+		$facultyInstance->addChild('ActivationCode', 	$row['ActivationCode']);
+		$facultyInstance->addChild('IsActive', 			$row['IsActive']);
+		$facultyInstance->addChild('FirstAccessDate', 	$row['FirstAccessDate']);
+		$facultyInstance->addChild('LastAccessDate', 	$row['LastAccessDate']);
+	
+	}//end while ($row = mysql_fetch_assoc($result))
+	
+	/*************************************************************
+	 * write $xml variable to a file on the server
+	*************************************************************/
+	$fp = fopen("../xml/Table-Solo-Faculty.xml","wb");
+	fwrite($fp, $xml->asXML());
+	fclose($fp);
+
 echo <<<EOT
- <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-      <h1 class="page-header">Current Users</h1>
- </div>
+<!--********************************************************************
+		* HTML part 
+	***********************************************************************-->
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+      <!-- TODO use session variable to get user's full name -->
+      <h1 class="page-header">Current Faculty</h1>
+</div>
     
- 
- <div class="container-fluid">
-      <div class="row">	        
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+<div class="container-fluid">
+	<div class="row">	        
+		<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 			<div class="table-responsive">
 				<table class="table">
 					<tr>
 						<th>#</th>
 						<th>First Name</th>
 						<th>Last Name</th>
-						<th>Email</th>
-						<th>Accepted Invitation</th>
+						<th>Middle Name</th>
+						<th>User Name</th>
+						<th>User Password</th>
+						<th>Activation Code</th>
+						<th>Activated</th>
+						<th>First Access Date</th>
+						<th>Last Access Date</th>
 						<th>Edit</th>
 					</tr>
-					<?php
+EOT;
 						//TODO
 						//Add for loop to go through user DB and print out tr/td info
-					?>
-					<tr>
-						<td>1</td>
-						<td>John</td>
-						<td>Doe</td>
-						<td>email@email.com</td>
-						<td class="success">Yes</td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-					<tr>
-						<td>2</td>
-						<td>Woodrow</td>
-						<td>Wilhelm</td>
-						<td>WoodrowSWilhelm@armyspy.com</td>
-						<td class="danger">No <a href="#">(Resend Email)</a></td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-					<tr>
-						<td>3</td>
-						<td>Roy</td>
-						<td>Walker</td>
-						<td>RoyKWalker@teleworm.us</td>
-						<td class="success">Yes</td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-					<tr>
-						<td>4</td>
-						<td>Benjamin</td>
-						<td>Grace</td>
-						<td>BenjaminDGrace@dayrep.com</td>
-						<td class="success">Yes</td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-					<tr>
-						<td>5</td>
-						<td>Louis</td>
-						<td>Hales</td>
-						<td>LouisAHales@armyspy.com</td>
-						<td class="danger">No <a href="#">(Resend Email)</a></td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-				</table>
-			</div>
-		</div>
-	</div>
-</div>
-EOT;
+						$facultyRecord = simplexml_load_file('../xml/Table-Solo-Faculty.xml');
+						$i = -1;
+						foreach ($facultyRecord as $index)
+						{
+							//get the index for this associated array
+							$i++;
+							//prepare for query string
+							$get = $_GET;
+							$get['facultyXMLID'] = $i;
+							$theQueryString = http_build_query($get);
+							print <<<HERE
+							<tr>
+								<td>$index->FacultyID</td>
+								<td>$index->FirstName</td>
+								<td>$index->LastName</td>
+								<td>$index->MiddleName</td>
+								<td>$index->UserName</td>
+								<td>$index->UserPassword</td>
+								<td>$index->ActivationCode</td>
+								<td>$index->IsActive</td>
+								<td>$index->FirstAccessDate</td>
+								<td>$index->LastAccessDate</td>
+								<td><a href="editSingleFaculty.php?$theQueryString">Edit</a></td>
+							</tr>
+HERE;
+							//test
+							//echo "<br>" .$i;
+						}//end foreach ($adminRecord as $index)
 	}
 	else if($requestedPage == "create-admin")
 	{
 echo <<<EOT
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-      <h1 class="page-header">Create Administrator User</h1>
+      <h1 class="page-header">Create Administrative User</h1>
     </div>
     
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -257,8 +317,68 @@ EOT;
 	}
 	else if($requestedPage == 'manage-admins')
 	{
+
+	require_once "../dbconnect.php";
+	
+	//always initialized variables to be used
+	/*
+	$adminID 			= "";
+	$userName			= "";
+	$userPassword		= "";
+	$firstAccessDate	= "";
+	$lastAccessDate 	= "";
+	$firstName 			= "";
+	$lastName			= "";
+	$middleName 		= "";
+	$activationCode		= "";
+	$isActivated		= "";
+	*/
+	//TODO
+	/*************************************************************
+	 * DB activity - Check SESSION vaiable against DB.ADMIN
+	*************************************************************/
+	
+	
+	
+	
+	/*************************************************************
+	 * DB activity - Fetch record from DB.ADMIN
+	*************************************************************/
+	// SQL Creation to read all values in department column
+	$sql = "SELECT * FROM A_ADMIN;";
+	//send the query to the database or quit if cannot connect || hold the result set
+	$result = mysql_query($sql, $conn) or die(mysql_error());
+	//test
+	//print_r($result);
+	//initialize variable which will store out xml code
+	$xml = new SimpleXMLElement('<xml/>');
+	//parse results into XML format
+	// ProjectID Title Abstract InitialDate LongText CloseDate
+	while($row = mysql_fetch_assoc($result))
+	{
+		$AdminInstance = $xml->addChild('AdminInstance');
+		$AdminInstance->addChild('AdminID', $row['AdminID']);
+		$AdminInstance->addChild('Email', $row['Email']);
+		$AdminInstance->addChild('Password', $row['Password']);
+		$AdminInstance->addChild('FirstAccessDate', $row['FirstAccessDate']);
+		$AdminInstance->addChild('LastAccessDate', $row['LastAccessDate']);
+		$AdminInstance->addChild('FirstName', $row['FirstName']);
+		$AdminInstance->addChild('LastName', $row['LastName']);
+		$AdminInstance->addChild('MiddleName', $row['MiddleName']);
+		$AdminInstance->addChild('ActivationCode', $row['ActivationCode']);
+		$AdminInstance->addChild('IsActive', $row['IsActive']);
+	
+	}//end while ($row = mysql_fetch_assoc($result))
+	
+	/*************************************************************
+	 * write $xml variable to a file on the server
+	*************************************************************/
+	$fp = fopen("../xml/Table-Solo-Admin.xml","wb");
+	fwrite($fp, $xml->asXML());
+	fclose($fp);
 echo <<<EOT
  <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+      <!-- TODO use session variable to get user's full name -->
       <h1 class="page-header">Current Admins</h1>
  </div>
     
@@ -272,54 +392,47 @@ echo <<<EOT
 						<th>#</th>
 						<th>First Name</th>
 						<th>Last Name</th>
-						<th>Email</th>
-						<th>ROLE</th>
+						<th>Middle Name</th>
+						<th>User Name</th>
+						<th>User Password</th>
+						<th>Activation Code</th>
+						<th>Activated</th>
+						<th>First Access Date</th>
+						<th>Last Access Date</th>
 						<th>Edit</th>
 					</tr>
-					<?php
+EOT;
 						//TODO
 						//Add for loop to go through user DB and print out tr/td info
-					?>
-					<tr>
-						<td>1</td>
-						<td>John</td>
-						<td>Doe</td>
-						<td>email@email.com</td>
-						<td class="success">ADMIN</td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-					<tr>
-						<td>2</td>
-						<td>Woodrow</td>
-						<td>Wilhelm</td>
-						<td>WoodrowSWilhelm@armyspy.com</td>
-						<td class="success">ADMIN</a></td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-					<tr>
-						<td>3</td>
-						<td>Roy</td>
-						<td>Walker</td>
-						<td>RoyKWalker@teleworm.us</td>
-						<td class="success">ADMIN</td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-					<tr>
-						<td>4</td>
-						<td>Benjamin</td>
-						<td>Grace</td>
-						<td>BenjaminDGrace@dayrep.com</td>
-						<td class="success">ADMIN</td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-					<tr>
-						<td>5</td>
-						<td>Louis</td>
-						<td>Hales</td>
-						<td>LouisAHales@armyspy.com</td>
-						<td class="success">ADMIN</a></td>
-						<td><a href="#">Edit</a></td>
-					</tr>
+						$adminRecord = simplexml_load_file('../xml/Table-Solo-Admin.xml');
+						$i = -1;
+						foreach ($adminRecord as $index)
+						{
+							//get the index for this associated array
+							$i++;
+							//prepare for query string
+							$get = $_GET;
+							$get['AdminXMLID'] = $i;
+							$theQueryString = http_build_query($get);
+							print <<<HERE
+							<tr>
+								<td>$index->AdminID</td>
+								<td>$index->FirstName</td>
+								<td>$index->LastName</td>
+								<td>$index->MiddleName</td>
+								<td>$index->Email</td>
+								<td>$index->Password</td>
+								<td>$index->ActivationCode</td>
+								<td>$index->IsActive</td>
+								<td>$index->FirstAccessDate</td>
+								<td>$index->LastAccessDate</td>
+								<td><a href="editSingleAdmin.php?$theQueryString">Edit</a></td>
+							</tr>
+HERE;
+							//test
+							//echo "<br>" .$i;
+						}//end foreach ($adminRecord as $index)
+echo <<<EOT
 				</table>
 			</div>
 		</div>
@@ -331,7 +444,7 @@ EOT;
 	{
 echo <<<EOT
    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-      <h1 class="page-header">Create Project</h1>
+      <h1 class="page-header">Create a New Project</h1>
     </div>
 <div class="container-fluid">
 	<div class="row">

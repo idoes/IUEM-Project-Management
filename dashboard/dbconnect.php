@@ -4,7 +4,7 @@
  * 
   */
 
-	$conn = mysql_connect("localhost", "congqi", "congqi") or die(mysql_error());
+	$conn = mysql_connect("localhost", "root", "toor") or die(mysql_error());
 	$select = mysql_select_db("congqi_db", $conn);
 	return $conn;
 

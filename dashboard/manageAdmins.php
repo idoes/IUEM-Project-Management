@@ -47,8 +47,8 @@
 		$AdminInstance->addChild('FirstName', $row['FirstName']);
 		$AdminInstance->addChild('LastName', $row['LastName']);
 		$AdminInstance->addChild('MiddleName', $row['MiddleName']);
-		$AdminInstance->addChild('ActivationCode', $row['ActivationCode']);
-		$AdminInstance->addChild('IsActive', $row['IsActive']);
+		//$AdminInstance->addChild('ActivationCode', $row['ActivationCode']);
+		//$AdminInstance->addChild('IsActive', $row['IsActive']);
 	
 	}//end while ($row = mysql_fetch_assoc($result))
 	
@@ -113,7 +113,7 @@
 							</tr>
 HERE;
 							//test
-							echo "<br>" .$i;
+							//echo "<br>" .$i;
 						}//end foreach ($adminRecord as $index)
 					?>
 					<!-- TODO deletion -->

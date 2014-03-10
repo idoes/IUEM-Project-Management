@@ -8,7 +8,7 @@
     <meta name="author" content="">
     <link rel="shortcut icon" href="assets/ico/favicon.ico">
 
-    <title>Signin Template for Bootstrap</title>
+    <title>IUEM Login</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -29,16 +29,29 @@
   <body>
 
     <div class="container">
-
-      <form class="form-signin" role="form" id='login-form'>
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <input type="email" class="form-control" placeholder="Email address" required autofocus>
-        <input type="password" class="form-control" placeholder="Password" required>
+    <form action="dashboard/dashboard.php" class="form-signin" method='post' id='login-form'>
+	<?php
+		if(isset($_GET['message']))
+		{
+			if($_GET['message'] == 'bad-login')
+			{
+				echo "<h2 class='form-signin-heading'>Invalid credentials</h2>";
+			} else if($_GET['message'] == 'denied') {
+				echo "<h2 class='form-signin-heading'>Not authorized</h2>";
+			}
+		} 
+		else 
+		{
+			echo "<h2 class='form-signin-heading'>Please sign in</h2>";
+		}
+	?>        
+        <input type="email" name="email" class="form-control" placeholder="Email address" required autofocus>
+        <input type="password" name="password" class="form-control" placeholder="Password" required>
         <select name="user-type" form="login-form" class="form-control">
- 		<option value="faculty">Faculty</option>
- 		<option value="admin">Admin</option>
-	 </select><br/>
-        <button class="btn btn-lg btn-primary btn-block" href='dashboard/dashboard.php'> <!--type="submit"-->Sign in</button>
+	 		<option value="faculty">Faculty/Staff</option>
+	 		<option value="admin">Admin</option>
+		 </select><br/>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
       </form>
 
     </div> <!-- /container -->
