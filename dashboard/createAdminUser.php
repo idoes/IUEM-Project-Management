@@ -256,12 +256,7 @@
 		}// end if ($firstNameIsOk && $lastNameIsOk && $passwordIsOk && $emailIsOk) 
 		
 		
-	}//end if(isset($_POST['formSubmit']))
-	
-
-	
-
-    
+	}//end if(isset($_POST['formSubmit']))    
 ?>    
 
     

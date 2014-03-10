@@ -158,7 +158,7 @@
 			$count = $theObject -> COUNTER;
 			
 			//test
-			print "<br>Email Record occur as counter: $count <br>";
+			//print "<br>Email Record occur as counter: $count <br>";
 			
 			//the Record has already occur
 			if ($count != 0)
