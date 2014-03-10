@@ -132,49 +132,6 @@ HERE;
 							echo "<br>" .$i;
 						}//end foreach ($adminRecord as $index)
 					?>
-					<!-- TODO deletion -->
-					<!-- 
-					<tr>
-						<td>1</td>
-						<td>John</td>
-						<td>Doe</td>
-						<td>email@email.com</td>
-						<td class="success">ADMIN</td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-					<tr>
-						<td>2</td>
-						<td>Woodrow</td>
-						<td>Wilhelm</td>
-						<td>WoodrowSWilhelm@armyspy.com</td>
-						<td class="success">ADMIN</a></td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-					<tr>
-						<td>3</td>
-						<td>Roy</td>
-						<td>Walker</td>
-						<td>RoyKWalker@teleworm.us</td>
-						<td class="success">ADMIN</td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-					<tr>
-						<td>4</td>
-						<td>Benjamin</td>
-						<td>Grace</td>
-						<td>BenjaminDGrace@dayrep.com</td>
-						<td class="success">ADMIN</td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-					<tr>
-						<td>5</td>
-						<td>Louis</td>
-						<td>Hales</td>
-						<td>LouisAHales@armyspy.com</td>
-						<td class="success">ADMIN</a></td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-					 -->
 				</table>
 			</div>
 		</div>
