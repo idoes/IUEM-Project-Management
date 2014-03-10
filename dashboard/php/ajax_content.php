@@ -803,6 +803,7 @@ EOT;
 	}
 	else if($requestedPage == 'manage-projects')
 	{
+	include_once('../dbconnect.php');
 echo <<<EOT
  <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
       <h1 class="page-header">Manage Projects</h1>
@@ -817,78 +818,47 @@ echo <<<EOT
 						<th>#</th>
 						<th>Project Title</th>
 						<th>Created On</th>
-						<th>Members</th>
+						<th>Creator</th>
 						<th>Edit</th>
 					</tr>
-					<?php
-						//TODO
-						//Add for loop to go through project DB and print out tr/td info
-					?>
-					<tr>
-						<td>1</td>
-						<td>Project 1</td>
-						<td>2/14/2014</td>
-						<td>
-							<ul>
-							  <li>User 1 (Creator)</li>
-							  <li>User 2</li>
-							  <li>User 3</li>
-							</ul>
-						</td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-					<tr>
-						<td>2</td>
-						<td>Project 2</td>
-						<td>2/04/2014</td>
-						<td>
-							<ul>
-							  <li>User 1 (Creator)</li>
-							  <li>User 2</li>
-							  <li>User 3</li>
-							  <li>User 4</li>
-							</ul>
-						</td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-					<tr>
-						<td>3</td>
-						<td>Project 3</td>
-						<td>1/01/2013</td>
-						<td>
-							<ul>
-							  <li>User 1 (Creator)</li>
-							</ul>
-						</td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-					<tr>
-						<td>4</td>
-						<td>Project 4</td>
-						<td>9/10/2012</td>
-						<td>
-							<ul>
-							  <li>User 1 (Creator)</li>
-							  <li>User 2</li>
-							</ul>
-						</td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-					<tr>
-						<td>5</td>
-						<td>Project 5</td>
-						<td>1/29/2013</td>
-						<td>
-							<ul>
-							  <li>User 1 (Creator)</li>
-							  <li>User 2</li>
-							  <li>User 3</li>
-							  <li>User 4</li>
-							  <li>User 5</li>
-							</ul>
-						</td>
-						<td><a href="#">Edit</a></td>
-					</tr>
+EOT;
+	//TODO
+	//Add for loop to go through project DB and print out tr/td info
+	$result = mysql_query(" SELECT *
+							FROM A_PROJECT;");
+
+	$num_rows = mysql_num_rows($result);
+	
+	$i = 1;
+
+	while($row = mysql_fetch_assoc($result))
+	{
+		$project_id = $row['ProjectID'];
+		echo "<tr><td>".$i."</td>";
+		echo "<td>".$row['Title']."</td>";
+		echo "<td>".$row['InitialDate']."</td>";
+		$user_query = mysql_query(" SELECT FacultyID
+									from A_MANAGEMENT
+									WHERE ProjectID = '".$project_id."'
+									LIMIT 1;");
+									
+		$user_query = mysql_fetch_array($user_query);
+		
+		$faculty_query = mysql_query( " SELECT FirstName, LastName
+										FROM A_FACULTY
+										WHERE FacultyID = '".$user_query['FacultyID']."'
+										LIMIT 1;" );
+										
+		$faculty_query = mysql_fetch_array($faculty_query);
+		
+		echo "<td>".$faculty_query['FirstName']." ".$faculty_query['LastName']."</td>";
+		
+		echo "<td><a href='#'>Edit</a></td></tr>";
+		$i++;
+	}
+	
+
+echo <<<EOT
 				</table>
 			</div>
 		</div>

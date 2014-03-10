@@ -15,7 +15,7 @@
 	 
 	 //check if user already logged in
 	 if(!isset($_SESSION['UID']))
-	 {	 
+	 {
 		 //get post variable place into variable	 
 		isset($_POST['email']) ? $email = $_POST['email'] : Header("Location: ../login.php");
 		isset($_POST['password']) ? $password = $_POST['password'] : Header("Location: ../login.php");
