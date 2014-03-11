@@ -55,25 +55,6 @@
         </div>
       </div>
     </div>
-    
-<?php
-	//TODO: write command to check variable $_SESSION(‘ACCESS_LEVEL’)
-	//From Cong: 
-		//if == 'SUPER_ADMIN', load this:
-	        // <div class="col-sm-3 col-md-2 sidebar">
-	          // <ul class="nav nav-sidebar">
-	            // <li><a href="#">Create User</a></li>
-	            // <li><a href="#">Manage Users</a></li>
-	            // <li><a href="#">Create Project</a></li>
-	            // <li><a href="#">Manage Projects</a></li>
-	        // </div>
-	   //if == 'FACULTY', load this:
-			// <div class="col-sm-3 col-md-2 sidebar">
-	          // <ul class="nav nav-sidebar">
-	            // <li><a href="#">Create Project</a></li>
-	            // <li><a href="#">Manage Projects</a></li>
-	        // </div>      				
-?>
 
 <!-- Remove this after PHP implementation is complete -->
 <!-- Which part to be removed? Assume the following list items, then why? -->

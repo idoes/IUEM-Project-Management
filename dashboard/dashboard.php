@@ -17,9 +17,9 @@
 	 if(!isset($_SESSION['UID']))
 	 {
 		 //get post variable place into variable	 
-		isset($_POST['email']) ? $email = $_POST['email'] : Header("Location: ../login.php");
-		isset($_POST['password']) ? $password = $_POST['password'] : Header("Location: ../login.php");
-		isset($_POST['user-type']) ? $user_type = $_POST['user-type'] : Header("Location: ../login.php"); //faculty | admin
+		isset($_POST['email']) ? $email = $_POST['email'] : Header("Location: ../login.php?message=denied");
+		isset($_POST['password']) ? $password = $_POST['password'] : Header("Location: ../login.php?message=denied");
+		isset($_POST['user-type']) ? $user_type = $_POST['user-type'] : Header("Location: ../login.php?message=denied"); //faculty | admin
 		
 		if($user_type == 'faculty')
 		{
@@ -36,11 +36,12 @@
 				$_SESSION['EMAIL'] = $result['Email'];		
 				$_SESSION['FULL_NAME'] = $result['FirstName']." ".$result['LastName'];
 				$_SESSION['ACCESS_LEVEL'] = "FACULTY";
+				include_once('./php/header.php');	
 			}
 			else 
 			{
 				header("Location: ../login.php?message=bad-login");
-			}		
+			}	
 		}
 		else if($user_type == 'admin')
 		{
@@ -57,6 +58,7 @@
 				$_SESSION['EMAIL'] = $result['Email'];		
 				$_SESSION['FULL_NAME'] = $result['FirstName']." ".$result['LastName'];
 				$_SESSION['ACCESS_LEVEL'] = "SUPER_ADMIN";
+				include_once('./php/header.php');	
 			}
 			else 
 			{
@@ -69,7 +71,7 @@
 			die();
 		}
 	}
-	include_once('./php/header.php');	
+	
 
 		echo <<<EOT
 		<div class="container-fluid">

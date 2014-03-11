@@ -10,9 +10,3 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
   </body>
 </html>
-<?php
-	if(!isset($_SESSION['UID']))
-	{
-		header("Location: ../login.php?message=denied");
-	}
-?>
