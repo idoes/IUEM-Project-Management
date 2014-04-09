@@ -305,7 +305,7 @@ echo <<<EOT
 		<div class="form-group">
 			<label for="email" class="col-sm-1 control-label">Email</label>
 			<div class="col-sm-4">
-				<input type="email" class="form-control" id="email" placeholder="Email (Required)" name="email">
+				<input autocomplete="off" type="email" class="form-control" id="email" placeholder="Email (Required)" name="email">
 			</div>
 		</div>
 		<div class="form-group">
@@ -785,7 +785,7 @@ echo <<<EOT
 			<div class="form-group">
 				<label for="email" class="col-sm-1 control-label">Email</label>
 				<div class="col-sm-4">
-					<input type="email" class="form-control" id="email" placeholder="Email (Required)" name="email">
+					<input autocomplete="off" type="email" class="form-control" id="email" placeholder="Email (Required)" name="email">
 				</div>
 			</div>
 			<div class="form-group">
@@ -1010,9 +1010,9 @@ EOT;
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="projectInspector" class="col-sm-1 control-label">Project Inspector:</label>
+					<label for="projectInspector" class="col-sm-1 control-label">Project Inspector Name:</label>
 					<div class="col-sm-4">
-						<input autocomplete="off" value="" type="text" list="txtHint" class="form-control" id="projectInspector" placeholder="Project Inspector" name="projectInspector" onkeyup="showHint(this.value)">
+						<input autocomplete="off" value="" type="text" list="txtHint" class="form-control" id="projectInspector" placeholder="Project Inspector Name" name="projectInspector" onkeyup="showHint(this.value)">
 						<datalist id="txtHint"></datalist>
 					</div>
 				</div>
@@ -1032,19 +1032,26 @@ EOT;
 				</div-->
 				<div class="form-group">
 					<div class="col-sm-offset-1 col-sm-10">
-						<button onclick="addProjectInspector()" class="btn btn-primary">
-							Add Project Co-Inspector (Optional)
+						<button id='addButton' type='button' class="btn btn-primary">
+							Add Project Co-PI (Optional)
 						</button>
 					</div>
 				</div>
 				<div class="form-group">
 					<div class="col-sm-offset-1 col-sm-10">
-						<br/>
+						<button id='removeButton' type='button' class="btn btn-primary">
+							Remove Last CO-PI
+						</button>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-1 col-sm-10">
 						<button action="editSingleProject.php" type="submit" class="btn btn-primary">
 							Create Project
 						</button>
 					</div>
 				</div>
+				<br/>
 			</form>
 			</div>
 		</div>

@@ -15,6 +15,16 @@
 		isset($_POST['projectInspector']) ? trim($PI_ID = $_POST['projectInspector']) : null;
 		isset($_POST['facultystartdate']) ? trim($facultyStartDate = $_POST['facultystartdate']) : null;
 		
+		$numCOPI = 0;
+		//echo print_r($_POST); die();
+		for($i = 0; $i < 10; $i++)
+		{
+			if(isset($_POST['projectInspector'.$i]))
+			{
+				$numCOPI = $numCOPI + 1;
+			}
+		}
+				
 		//check variable
 		(!strlen($title) > 0) ? $interactive_message.="Project title cannot be blank<br/>":null;
 		(!strlen($abstract) > 0) ? $interactive_message.="Project abstract cannot be blank<br/>":null;

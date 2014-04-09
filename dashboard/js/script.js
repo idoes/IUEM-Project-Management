@@ -1,11 +1,30 @@
 function init() {
 
 	var direct = getUrlVars()["redirect"];
-
 	//check if page needs redirect set by some database query
-	if (direct != "") {
+	if (direct != undefined) {
 		loadPage(direct);
 	}
+	
+	$("#addButton").click(function() {
+		if (($('.form-horizontal .control-group').length + 1) > 20) {
+			alert("Only 10 more Co-PI are allowed.");
+			return false;
+		}
+		var id = (($('.form-horizontal .control-group').length/2) + 1).toString();
+		$('.form-horizontal').append("<div class='form-group control-group'><label for='coInspector"+id+"' class=\"col-sm-1 control-label\">Co Inspector "+id+" Name</label><div class=\"col-sm-4\"><input autocomplete=\"off\" value=\"\" type=\"text\" list=\"txtHint\" class=\"form-control\" id=\"projectInspector"+id+"\" placeholder=\"Project Inspector "+id+" Name\" name=\"projectInspector"+id+"\" onkeyup=\"showHint(this.value)\"><datalist id=\"txtHint\"></datalist></div></div><div class=\"form-group control-group\"><label for=\"projectInspectorStartDate\" class=\"col-sm-1 control-label\">Co PI "+id+" Start Date</label><div class=\"col-sm-4\"><input value=\"\" type=\"text\" class=\"form-control\" id=\"startDateCOPI"+id+"\" placeholder=\"Project Inspector "+id+" Start Date\" name=\"startDateCOPI"+id+"\"></div></div>");
+		createCalendar();
+	});
+
+	$("#removeButton").click(function() {
+		if ($('.form-horizontal .control-group').length == 0) {
+			alert("No more textbox to be removed.");
+			return false;
+		}
+
+		$(".form-horizontal .control-group:last").remove();
+		$(".form-horizontal .control-group:last").remove();
+	});
 
 }
 
@@ -19,6 +38,13 @@ function createCalendar() {
 	$("#projectInspectorStartDate").datepicker({
 		dateFormat : 'yy-mm-dd'
 	});
+	
+	for(var i = 0; i < 10; i++)
+	{
+		$('#startDateCOPI'+i).datepicker({
+		dateFormat : 'yy-mm-dd'
+	});
+	}
 }
 
 function getUrlVars() {//credit http://papermashup.com/read-url-get-variables-withjavascript/
@@ -88,6 +114,7 @@ function loadPage(_page) {
 		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 			document.getElementById("ajax-page-content").innerHTML = xmlhttp.responseText;
 			createCalendar();
+			init();
 		}
 	}
 }
