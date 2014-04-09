@@ -431,9 +431,9 @@ EOT;
 	/*************************************************************
 	 * write $xml variable to a file on the server
 	*************************************************************/
-	$fp = fopen("../xml/Table-Solo-Faculty.xml","wb");
-	fwrite($fp, $xml->asXML());
-	fclose($fp);
+	//$fp = fopen("../xml/Table-Solo-Faculty.xml","wb");
+	//fwrite($fp, $xml->asXML());
+	//fclose($fp);
 
 echo <<<EOT
 <!--********************************************************************
@@ -901,9 +901,9 @@ EOT;
 	/*************************************************************
 	 * write $xml variable to a file on the server
 	*************************************************************/
-	$fp = fopen("../xml/Table-Solo-Admin.xml","wb");
-	fwrite($fp, $xml->asXML());
-	fclose($fp);
+	//$fp = fopen("../xml/Table-Solo-Admin.xml","wb");
+	//fwrite($fp, $xml->asXML());
+	//fclose($fp);
 echo <<<EOT
  <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
       <!-- TODO use session variable to get user's full name -->
@@ -1075,8 +1075,11 @@ echo <<<EOT
 						<th>#</th>
 						<th>Project Title</th>
 						<th>Created On</th>
-						<th>Creator</th>
+						<th>PI</th>
+						<th>Faculty Options</th>
+						<th>Add Files</th>
 						<th>Edit</th>
+						<th>Delete</th>
 					</tr>
 EOT;
 	//TODO
@@ -1097,20 +1100,32 @@ EOT;
 		$user_query = mysql_query(" SELECT FacultyID
 									from A_MANAGEMENT
 									WHERE ProjectID = '".$project_id."'
-									LIMIT 1;");
-									
-		$user_query = mysql_fetch_array($user_query);
-		
-		$faculty_query = mysql_query( " SELECT FirstName, LastName
-										FROM A_FACULTY
-										WHERE FacultyID = '".$user_query['FacultyID']."'
-										LIMIT 1;" );
-										
-		$faculty_query = mysql_fetch_array($faculty_query);
-		
-		echo "<td>".$faculty_query['FirstName']." ".$faculty_query['LastName']."</td>";
-		
-		echo "<td><a href='editSingleProject.php?projectID=".$project_id."'>Edit</a></td></tr>";
+									AND Responsibility='PI' LIMIT 1;");
+											
+		if(mysql_num_rows($user_query) == 0)
+		{
+			$user_query=array();
+			$user_query['FacultyID'] = 'PI Not Set';
+		} else {
+			$user_query = mysql_fetch_array($user_query);
+	                $faculty_query = mysql_query( " SELECT FirstName, LastName
+                                                        FROM A_FACULTY
+                                                        WHERE FacultyID = '".$user_query['FacultyID']."'
+                                                        LIMIT 1;" );
+                                                                                
+	                $faculty_query = mysql_fetch_array($faculty_query);
+		}
+
+		if($user_query['FacultyID'] !== 'PI Not Set')
+		{
+			echo "<td>".$faculty_query['FirstName']." ".$faculty_query['LastName']."</td>";
+		} else {
+			echo "<td>PI Not Set</td>";	
+		}
+		echo "<td><button type='button' class='btn btn-primary btn-xs' onclick=window.location='editAssociatedFaculty.php?projectID=$project_id'>Add/Remove Faculty</button></td>";
+		echo "<td><button type='button' class='btn btn-primary btn-xs' onclick=window.location='fileUpload.php?projectID=$project_id'>Add Files</button></td>";
+		echo "<td><button type='button' class='btn btn-primary btn-xs' onclick=window.location='editSingleProject.php?projectID=$project_id'>Edit Project</button></td>"; 
+		echo "<td><button type='button' class='btn btn-danger btn-xs' onclick=window.location='deleteProject.php?projectID=$project_id'>Delete Project</button></td>";
 		$i++;
 	}
 	

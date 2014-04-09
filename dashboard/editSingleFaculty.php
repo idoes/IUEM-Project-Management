@@ -419,3 +419,6 @@
 	</div>
 </form>
 </div>
+<?php
+	include_once('./php/footer.php');
+?>

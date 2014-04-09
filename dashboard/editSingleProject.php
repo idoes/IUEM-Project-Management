@@ -82,7 +82,8 @@
 		
 		$request = mysql_query("SELECT FacultyID, ManageStartDate, ManageEndDate
 								FROM A_MANAGEMENT
-								WHERE ProjectID = $projectID;") or die(mysql_error());
+								WHERE ProjectID = $projectID
+								AND Responsibility = 'PI';") or die(mysql_error());
 								
 		$faculty_result = mysql_fetch_array($request);
 		$faculty_id = $faculty_result['FacultyID'];
@@ -189,4 +190,5 @@
 		</div>
 	</div>
 EOT;
+include_once('./php/footer.php');
 ?>

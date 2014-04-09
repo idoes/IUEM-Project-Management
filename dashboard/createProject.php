@@ -4,6 +4,7 @@
 	
 	$message_out = "";
 	$interactive_message = "";
+	$delayTime = 3; //set delay time for refresh, increase this on co-pi error so they can read the dialog.
 	if(isset($_POST['projecttitle']))
 	{
 			
@@ -15,15 +16,24 @@
 		isset($_POST['projectInspector']) ? trim($PI_ID = $_POST['projectInspector']) : null;
 		isset($_POST['facultystartdate']) ? trim($facultyStartDate = $_POST['facultystartdate']) : null;
 		
-		$numCOPI = 0;
+		$numCOPI = 0;	
+		//Create two arrays to keep track of co-pi names and co-pi start dates
+		$coPINames = array();
+		$coPIStartDates = array();
+
+		
 		//echo print_r($_POST); die();
 		for($i = 0; $i < 10; $i++)
 		{
 			if(isset($_POST['projectInspector'.$i]))
 			{
 				$numCOPI = $numCOPI + 1;
+				$coPINames[$i] = $_POST['projectInspector'.$i];
+				$coPIStartDates[$i] = $_POST['startDateCOPI'.$i];
 			}
 		}
+
+		
 				
 		//check variable
 		(!strlen($title) > 0) ? $interactive_message.="Project title cannot be blank<br/>":null;
@@ -64,19 +74,52 @@
 			$max = $max['theMax'];
 			
 			$request = mysql_query("INSERT INTO A_MANAGEMENT
-									(FacultyID, ProjectID, ManageStartDate)
-									VALUES ($faculty_id, $max, '$facultyStartDate')", $conn) or die(mysql_error());
+									(FacultyID, ProjectID, ManageStartDate, Responsibility)
+									VALUES ($faculty_id, $max, '$facultyStartDate', 'PI')", $conn) or die(mysql_error());
 									
 			$success = true;
-			$interactive_message.="Project Created!";
-									
-		}
+			$interactive_message.="Project Created!<br/>"; 
+			
+			for($i = 1; $i <= count($coPINames); $i++)
+			{		
+				//first get the faculty id for this coPI
+
+				if(strpos($coPINames[$i]," ") !== false)
+				{
+					$firstName = explode(" ",$coPINames[$i])[0];
+					$lastName = explode(" ",$coPINames[$i])[1];
+				} else {
+					$interactive_message.="Please only enter CO-PI as 'FirstName LastName' in the textbox!  CO-PI ".$i." will not be added (Don't worry, you may always add them later in edit projects tab)";
+				$firstName = "INVALID";$lastName = "INVALID";
+				$delayTime = 10;				
+}
+				$request = mysql_query("SELECT FacultyID FROM `A_FACULTY`
+							WHERE FirstName = '".$firstName."'
+							AND LastName = '".$lastName."';", $conn) or 
+					
+				$facultyNameOut = mysql_fetch_assoc($request);
+				
+
+				if(mysql_num_rows($request) == 1)
+				{
+					$request = mysql_query("INSERT INTO `A_MANAGEMENT`
+								(FacultyID, ProjectID, ManageStartDate, Responsibility)
+                                                                VALUES (".$facultyNameOut['FacultyID'].", ".$max.", '".$coPIStartDates[$i]."', 'CO-PI');", $conn) or $interactive_message.="Project was created, however CO-PI with name ".$coPINames[$i]." was not added to the project because they could not be found in the database!<br/>";
+					if(strpos($interactive_message, $coPINames[$i]) !== false)
+					{
+						$delayTime = 10;
+					}
+				}	
+		}			
+
+
+	}
 		
 		
     	if($success)
     	{
     		$message_out = "Project Created!";
-			header('Refresh: 3; URL=dashboard.php?redirect=create-project');
+			header('Refresh: '.$delayTime.'; URL=dashboard.php?redirect=create-project');
     	}	
 	}
 	echo <<<EOT
