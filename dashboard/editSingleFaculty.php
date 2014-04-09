@@ -182,7 +182,7 @@
 			$theObject = mysql_fetch_object($resultSqlCountFaculty);
 			$count = $theObject -> COUNTER;
 			
-			if($count != 1)
+			if($count != 0)
 			{
 				$interactiveMessage .= "<br>User name value is duplicated with others user name.<br>";
 			}

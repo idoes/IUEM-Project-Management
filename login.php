@@ -29,7 +29,7 @@
   <body>
 
     <div class="container">
-    <form action="dashboard/dashboard.php" class="form-signin" method='post' id='login-form'>
+    <form action="dashboard/checkLogin.php" class="form-signin" method='post' id='login-form'>
 	<?php
 		if(isset($_GET['message']))
 		{

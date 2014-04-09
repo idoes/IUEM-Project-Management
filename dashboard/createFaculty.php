@@ -37,7 +37,7 @@
 		'<br>Your UserName is '.$userName.
 		'<br>Your Password is '.$password.
 		'<br>Please click the following link in order to finish registration preocess<br>'.
-		'http://corsair.cs.iupui.edu:22071/lab4/resetPassword.php?theQueryString='.$code;
+		'http://corsair.cs.iupui.edu:22071/IUEM/dashboard/validate.php?theQueryString='.$code;
 		$mailer = new Mail();
 	
 		if (($mailer->sendMail($emailAddress, $firstName, $subject, $body)) == true)
@@ -242,6 +242,7 @@
 				if ($resultInsertion)
 				{
 					$interactiveMessage .= "<br>You information has been inserted into Database successfully.";
+					header('Refresh: 3; URL=dashboard.php?redirect=create-user');
 				}
 				else
 				{
@@ -346,7 +347,7 @@
 				<div class="col-sm-offset-1 col-sm-10">
 					<br/>
 					<!-- use input instead button -->
-					<input type="submit" class='btn btn-primary' name="formSubmit" value="Create Administrator User" />
+					<input type="submit" class='btn btn-primary' name="formSubmit" value="Create Faculty/Staff User" />
 					<!--  
 					<button type="submit" class="btn btn-primary" name="formSubmit">
 						Create Database User

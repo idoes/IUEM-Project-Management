@@ -51,7 +51,7 @@
 		'<br>Your UserName is '.$userName.
 		'<br>Your Password is '.$password.
 		'<br>Please click the following link in order to finish registration preocess<br>'.
-		'http://corsair.cs.iupui.edu:22071/lab4/resetPassword.php?theQueryString='.$code;
+		'http://corsair.cs.iupui.edu:22071/IUEM/dashboard/validate.php?theQueryString='.$code;
 		$mailer = new Mail();
 	
 		if (($mailer->sendMail($emailAddress, $firstName, $subject, $body)) == true)
@@ -492,18 +492,278 @@ EOT;
 HERE;
 							//test
 							//echo "<br>" .$i;
-						}//end foreach ($adminRecord as $index)
+}//end foreach ($adminRecord as $index)
 	}
 	else if($requestedPage == "create-admin")
 	{
+	include_once('../inc/utilityFunction.php');
+	require_once "../mail/mail.class.php";
+	require_once "../dbconnect.php";
+	
+	//always initialized variables to be used
+	$interactiveMessage = "";
+	$password 			= "";
+	//password is generated for user and send to user's email for activation purpose
+	//The given password is exactly 12 in length, contaning mixed Captical English Letter and single digit
+	$password 	= randomCodeGenerator(12);
+	
+	
+	/*
+	 * send Email
+	*/
+	function sendEmail($emailAddress, $firstName, $userName, $password)
+	{
+		global $interactiveMessage;
+		//now send the email to the username registered for activating the account
+		//$code = randomCodeGenerator(50);
+		$code = randomCodeGenerator(50);
+		$subject = "Email Activation";
+		//TODO change the re-direct direcotory || reset password page
+		$body = 'Your code is '.$code.
+				'<br>Your UserName is '.$userName.
+				'<br>Your Password is '.$password.
+				'<br>Please click the following link in order to finish registration preocess<br>'.
+				'http://corsair.cs.iupui.edu:22071/IUEM/dashboard/validate.php?theQueryString='.$code;
+		$mailer = new Mail();
+	
+		if (($mailer->sendMail($emailAddress, $firstName, $subject, $body)) == true)
+			$interactiveMessage .= "A welcome message has been sent to the address. He or she have futher instrunction 
+									in order to activate his or her account";
+		else $interactiveMessage .= "Email not sent. " . $emailAddress.' '. $firstName.' '. $subject.' '. $body;
+	
+		return $code;
+	}
+	
+	//always initialized variables to be used
+	$firstName 			= "";
+	$lastName			= "";
+	$middleName 		= "";
+	$email				= "";
+
+	if(isset($_POST['formSubmit']))
+	{
+		//take the information submitted and verify inputs
+		//always trim the user input to get rid of the additiona white spaces on both ends of the user input
+		$firstName 	= trim($_POST['firstname']);
+		$lastName	= trim($_POST['lastname']);
+		$middleName = trim($_POST['middlename']);
+		$email		= trim($_POST['email']);
+		
+		$firstNameIsOk 	= false;
+		$lastNameIsOk	= false;
+		$middleNameIsOk = false;
+		$passwordIsOk 	= false;	
+		$emailIsOk		= false;
+/*	
+		$formInputArray = array (
+				'firstName' 	=> array('field' => 'TextBox[First Name]', 'value' 	=> $firstName),
+				'middleName' 	=> array('field' => 'TextBox[last Name]',  'value' 	=> $middleName),
+				'lastName' 		=> array('field' => 'TextBox[last Name]',  'value' 	=> $firstName),
+				'password' 		=> array('field' => 'TextBox[Password]',   'value' 	=> $password),
+				'email' 		=> array('field' => 'TextBox[Email]',      'value'	=> $email)
+		);
+*/		
+	
+		// validate text box input 1 - check empty
+		if(empty($firstName))
+		{
+			$interactiveMessage = $interactiveMessage . "First Name can not be empty.<br>";
+		}
+		if(empty($lastName))
+		{
+			$interactiveMessage = $interactiveMessage . "Last Name can not be empty.<br>";
+		}
+		if(empty($password))
+		{
+			$interactiveMessage = $interactiveMessage . "Password can not be empty.<br>";
+		}
+		if(empty($email))
+		{
+			$interactiveMessage = $interactiveMessage . "Email can not be empty.<br>";
+		}
+		
+		//validate text box input 2 - check English letter based
+		if(characterCheck($firstName) == false)
+		{
+			$interactiveMessage = $interactiveMessage . "First Name can only be English based letter.<br>";
+		}
+		else
+		{
+			$firstNameIsOk = true;
+		}
+		if(characterCheck($lastName) == false)
+		{
+			$interactiveMessage = $interactiveMessage . "Last Name can only be English based letter.<br>";
+		}
+		else
+		{
+			$lastNameIsOk = true;
+		}
+		
+		//validate text box input 3 - password qualify
+		if(pwdValidate($password) == false)
+		{
+			$interactiveMessage = $interactiveMessage . "Password should be Longer than 12 characters and alphanumeric letters.<br>";
+		}
+		else
+		{
+			$passwordIsOk = true;
+		}
+		
+		//validate text box input 4 - Email qualify
+		if(emailAddressCheck($email) == false)
+		{
+			$interactiveMessage = $interactiveMessage . "Email is not an valid Email Address.<br>";
+		}
+		else
+		{
+			$emailIsOk = true;
+		}
+		
+		//validate text box input 5 - SQL Injection
+		//first escapse all the strings so that backslashes are added before the following characters: \x00, \n, \r, \, ', " and \x1a.
+		//This is used to prevent sql injections.
+		//$firstName 			= mysql_real_escape_string($firstName);
+		//$lastName			= mysql_real_escape_string($lastName);
+		//$middleName 		= mysql_real_escape_string($middleName);
+		//$password 			= mysql_real_escape_string($password);
+		//$email				= mysql_real_escape_string($email);
+		
+		
+		$interactiveMessage.="<br/><br/>";
+
+		// Checking passed
+		if ($firstNameIsOk && $lastNameIsOk && $passwordIsOk && $emailIsOk) 
+		{
+			//you will enter data into the database here
+			/*************************************************************
+			* Database activities - check Whether the Record has already occur
+			*************************************************************/
+			//1st check if the EmailAddress already exists in the database
+			$sqlCountAdmin = "SELECT COUNT(*) AS COUNTER FROM A_ADMIN WHERE Email = '" . $email. "';";
+			//test
+			//print "$sqlCountAdmin<br>";
+			//send the query to the database or quit if cannot connect || hold the result set
+			$result = mysql_query($sqlCountAdmin, $conn) or die(mysql_error());
+			//the query results are objects, in this case, one object
+			$field = mysql_fetch_object($result);
+			$count = $field -> COUNTER;
+			//test
+			print "Email Record occur as counter: $count <br>";
+			
+			
+			
+			
+			/*************************************************************
+			 * Database activities - the Record has already occur
+			*************************************************************/
+			if ($count != 0)
+			{
+				//to check IsActive or not
+				$sqlIsActive = "SELECT IsActive AS IS_ACTIVE FROM A_ADMIN WHERE Email = '" . $email. "';";
+				$resultIsActive = mysql_query($sqlIsActive, $conn) or die(mysql_error());
+				$returnObject= mysql_fetch_object($resultIsActive);
+				$isActive = $returnObject -> IS_ACTIVE;
+				//test
+				print "is Active: $isActive<br>";
+				
+				if($isActive === "NO")
+				{
+					//generate new activation code
+					//send emial with actication code again
+					//send Email
+					$activationCode2 = sendEmail($email, $firstName, $email, $password);
+					//test
+					print "ActivationCode2: $activationCode2<br>";
+					//Upgrade ADIMN.ActivationCode
+					$sqlUpgradeACode = "UPDATE A_ADMIN
+										SET ActivationCode = '$activationCode2',
+											Password = '$password' 
+										WHERE Email = '$email';";
+					$resultUpdate = mysql_query($sqlUpgradeACode, $conn) or die(mysql_error());
+					if ($resultUpdate)
+					{
+						$interactiveMessage .= "The new password value and activation code haven been reset.<br>";
+					}
+					else
+					{
+						$interactiveMessage .= "there has some problems during record updating; please re-insert admin. record again.<br>";
+					}
+				}
+				else 
+				{
+					$interactiveMessage = $interactiveMessage . "The created user has record in Database and has been activated by himself or herself.";
+				}
+
+			}//end if ($count != 0)
+			/*************************************************************
+			 * Database activities - the Record has NOT already occur
+			*************************************************************/
+			else
+			{
+				//send Email
+				$activationCode = sendEmail($email, $firstName, $email, $password);
+				//test
+				//print "$activationCode<br>";
+				//hash the password
+				//$password = sha1($password);
+			
+				$sql = "INSERT INTO A_ADMIN values(
+							null,
+							'$email',
+							'$password',
+							null,
+							null,
+							'$firstName',
+							'$lastName',
+							'$middleName',
+							'$activationCode',
+							'NO');";
+				//send the query to the database or quit if cannot connect || hold the result set
+				$result = mysql_query($sql, $conn) or die(mysql_error());
+				if ($result)
+				{
+					$interactiveMessage .= "You information has been inserted into Database successfully.";
+				}
+				else 
+				{
+					$interactiveMessage .= "there has some problems during record insertion; please re-insert admin. record again.";
+				}
+			}//end else count == 0
+			
+			//now send the email to the username registered for activating the account
+/*			
+			$code = randomCodeGenerator(30);
+			$subject = "Email Activation";
+		
+			$body = 'Your code is '.$code;
+			$mailer = new Mail();
+			if (($mailer->sendMail($uname, $fn, $subject, $body))==true)
+				$msg = "<b>Thank you for registering. A welcome message has been sent to the address you have just registered.</b>";
+			else $msg = "Email not sent. " . $uname.' '. $fn.' '. $subject.' '. $body;
+*/				
+			//direct to the next page if necessary
+			//Header ("Location:process.php?fn=".$fn."&ln=".$ln."&g=".$gender."&s=".$state."&b=".$birthYear) ;
+		}// end if ($firstNameIsOk && $lastNameIsOk && $passwordIsOk && $emailIsOk) 
+		
+		
+	}//end if(isset($_POST['formSubmit']))    
+
+    
 echo <<<EOT
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-      <h1 class="page-header">Create Administrative User</h1>
+      <h1 class="page-header">Create Administrator User</h1>
     </div>
     
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 	<form action="createAdminUser.php" class="form-horizontal" role="form" method="post">
-			
+EOT;
+			if ($interactiveMessage != "")
+			{
+				print $interactiveMessage."<br/><br/>";
+			}
+			$interactiveMessage = "";
+echo <<<EOT
 			<div class="form-group">
 				<label for="firstname" class="col-sm-1 control-label">First Name:</label>
 				<div class="col-sm-4">
@@ -531,7 +791,7 @@ echo <<<EOT
 			<div class="form-group">
 				<label for="password" class="col-sm-1 control-label">Password:</label>
 				<div class="col-sm-4">
-					<input type="text" class="form-control" id="password" placeholder="Password (Required)" name="password">
+					<input type="text" class="form-control" id="password" placeholder="{$password}" name="password" disabled>
 				</div>
 			</div>
 			<!-- see note 4  
@@ -570,7 +830,7 @@ echo <<<EOT
 				<div class="col-sm-offset-1 col-sm-10">
 					<br/>
 					<!-- use input instead button -->
-					<input type="submit" class="btn btn-primary" name="formSubmit" value="Create Administrator User" />
+					<input type="submit" class='btn btn-primary' name="formSubmit" value="Create Administrator User" />
 					<!--  
 					<button type="submit" class="btn btn-primary" name="formSubmit">
 						Create Database User
@@ -581,7 +841,6 @@ echo <<<EOT
 	</form>
     </div>
 
-	</div>
 EOT;
 	}
 	else if($requestedPage == 'manage-admins')
@@ -711,94 +970,85 @@ EOT;
 }
 	else if($requestedPage == 'create-project')
 	{
-echo <<<EOT
-   <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-      <h1 class="page-header">Create a New Project</h1>
-    </div>
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-		<form action="createProject.php" class="form-horizontal" role="form" method="post">
-			<div class="form-group">
-				<label for="projecttitle" class="col-sm-1 control-label">Title:</label>
-				<div class="col-sm-4">
-					<input type="text" class="form-control" id="projecttitle" placeholder="Project Title" name="projecttitle">
+	echo <<<EOT
+	   <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+	      <h1 class="page-header">Create a Project</h1>
+	    </div>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+			<form action="createProject.php" class="form-horizontal" role="form" method="post">
+				<div class="form-group">
+					<label for="projecttitle" class="col-sm-1 control-label">Title:</label>
+					<div class="col-sm-4">
+						<input value="" type="text" class="form-control" id="projecttitle" placeholder="Project Title" name="projecttitle">
+					</div>
 				</div>
+				<div class="form-group">
+					<label for="projecttitle" class="col-sm-1 control-label">Abstract:</label>
+					<div class="col-sm-4">
+						<textarea rows="6" class="form-control" id="projectAbstrct" placeholder="Project Abstract" name="projectAbstract"></textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="description" class="col-sm-1 control-label">Description:</label>
+					<div class="col-sm-4">
+						<textarea rows="6" class="form-control" id="description" placeholder="Project Description" name="description"></textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="startdate" class="col-sm-1 control-label">Project Start Date:</label>
+					<div class="col-sm-4">
+						<input value="" type="text" class="form-control" id="startdate" placeholder="Project Start Date" name="startdate">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="enddate" class="col-sm-1 control-label">Project End Date:</label>
+					<div class="col-sm-4">
+						<input value="" type="text" class="form-control" id="enddate" placeholder="Project End Date" name="enddate">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="projectInspector" class="col-sm-1 control-label">Project Inspector:</label>
+					<div class="col-sm-4">
+						<input autocomplete="off" value="" type="text" list="txtHint" class="form-control" id="projectInspector" placeholder="Project Inspector" name="projectInspector" onkeyup="showHint(this.value)">
+						<datalist id="txtHint"></datalist>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="projectInspectorStartDate" class="col-sm-1 control-label">project Inspector Start Date:</label>
+					<div class="col-sm-4">
+						<input value="" type="text" class="form-control" id="projectInspectorStartDate" placeholder="project Inspector Start Date" name="facultystartdate">
+					</div>
+				</div>
+				<!--div class="form-group">
+					<div class="control-group">
+						<label for="projectCoInspector" class="col-sm-1 control-label">Project Co-Inspector:</label>
+						<div class="col-sm-4">
+							<input value="" type="text" value="NULL" class="form-control" id="projectCoInspector" placeholder="Project Co-Inspector" name="projectCoInspector">
+						</div>
+					</div>
+				</div-->
+				<div class="form-group">
+					<div class="col-sm-offset-1 col-sm-10">
+						<button onclick="addProjectInspector()" class="btn btn-primary">
+							Add Project Co-Inspector (Optional)
+						</button>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-1 col-sm-10">
+						<br/>
+						<button action="editSingleProject.php" type="submit" class="btn btn-primary">
+							Create Project
+						</button>
+					</div>
+				</div>
+			</form>
 			</div>
-			<div class="form-group">
-				<label for="projecttitle" class="col-sm-1 control-label">Abstract:</label>
-				<div class="col-sm-4">
-					<textarea rows="6" class="form-control" id="projectAbstrct" placeholder="Project Abstract" name="projectAbstract"></textarea>
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="description" class="col-sm-1 control-label">Description:</label>
-				<div class="col-sm-4">
-					<textarea rows="6" class="form-control" id="description" placeholder="Project Description" name="description"></textarea>
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="startdate" class="col-sm-1 control-label">Project Start Date:</label>
-				<div class="col-sm-4">
-					<input type="text" class="form-control" id="startdate" placeholder="Project Start Date" name="startdate">
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="enddate" class="col-sm-1 control-label">Project End Date:</label>
-				<div class="col-sm-4">
-					<input type="text" class="form-control" id="enddate" placeholder="Project End Date" name="enddate">
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="projectInspector" class="col-sm-1 control-label">Project Inspector:</label>
-				<div class="col-sm-4">
-					<input type="text" class="form-control" id="projectInspector" placeholder="Project Inspector" name="projectInspector">
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="projectInspectorStartDate" class="col-sm-1 control-label">project Inspector Start Date:</label>
-				<div class="col-sm-4">
-					<input type="text" class="form-control" id="projectInspectorStartDate" placeholder="project Inspector Start Date" name="projectInspectorStartDate">
-				</div>
-			</div>
-			<div class="form-group">
-				<div class="control-group">
-				<label for="projectCoInspector" class="col-sm-1 control-label">Project Co-Inspector:</label>
-				<div class="col-sm-4">
-					<input type="text" class="form-control" id="projectCoInspector" placeholder="Project Co-Inspector" name="projectCoInspector">
-				</div>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class="col-sm-offset-1 col-sm-4">
-			<input type='button' class='btn btn-primary' value='Add Co-PI' id='addButton' />
-    			<input type='button' class='btn btn-primary' value='Remove Co-PI' id='removeButton' />
-				</div>
-			</div>
-			<div class="form-group"><br/>
-				<div class="col-sm-offset-1 col-sm-4">
-					Note:  Once a project has been created, you can assign team members, upload files, and make changes to the above fields again.<br>
-					Issue1: Co-Inspector layout.<br>
-					Issue2: Co-Inspector have to have a date for his or her co-inspection on this project.<br>
-					Note: we may want to redesign the co-inspector stuff; get those out and follow the below scenario.<br>
-					Note: In the perspective of this functionality, I am thinking we can add the default PI only, then add other participatants seperately.<br>
-					Note: for the same person, he or she can join a project as a normal reseacher or as a PI or as a Co-PI. <br>
-					On the other hands, a person can grant one or more as a normal reseacher or as a PI or as a Co-PI.<br>
-					
-				</div>
-			</div>
-			<div class="form-group">
-				<div class="col-sm-offset-1 col-sm-10">
-					<br/>
-					<button type="submit" class="btn btn-primary">
-						Create Project
-					</button>
-				</div>
-			</div>
-		</form>
 		</div>
 	</div>
-</div>
 EOT;
 	}
 	else if($requestedPage == 'manage-projects')
@@ -853,7 +1103,7 @@ EOT;
 		
 		echo "<td>".$faculty_query['FirstName']." ".$faculty_query['LastName']."</td>";
 		
-		echo "<td><a href='#'>Edit</a></td></tr>";
+		echo "<td><a href='editSingleProject.php?projectID=".$project_id."'>Edit</a></td></tr>";
 		$i++;
 	}
 	
@@ -868,6 +1118,74 @@ EOT;
 	}
 	else if($requestedPage == 'profile')
 	{
+	include_once('../dbconnect.php');
+	
+	$table_content = "";
+	session_start();
+	if($_SESSION['ACCESS_LEVEL'] === 'SUPER_ADMIN')
+	{
+		$result = mysql_query(" SELECT *
+								FROM A_ADMIN
+								WHERE AdminID = ".$_SESSION['UID'].";", $conn);
+																
+		$result = mysql_fetch_array($result);
+		
+  		$table_content.="<tr><td><b>Email:</b></td>
+						  <td>".$result['Email']."</td>
+						  </tr>
+						  <tr>
+						  <td><b>First Access Date:</b></td>
+						  <td>".$result['FirstAccessDate']."</td>
+						  </tr>
+						  <tr>
+						  <td><b>Last Access Date:</b></td>
+						  <td>".$result['LastAccessDate']."</td>
+						  </tr>
+						  <tr>
+						  <td><b>First Name:</b></td>
+						  <td>".$result['FirstName']."</td>
+						  </tr>
+						  <tr>
+						  <td><b>Last Name:</b></td>
+						  <td>".$result['LastName']."</td>
+						  </tr>
+						  <tr>
+						  <td><b>Middle Name:</b></td>
+						  <td>".$result['MiddleName']."</td>
+						 </tr>";
+		
+	} else if($_SESSION['ACCESS_LEVEL'] === 'FACULTY') {
+		$result = mysql_query(" SELECT *
+								FROM A_FACULTY
+								WHERE FacultyID = ".$_SESSION['UID'].";", $conn);
+																
+		$result = mysql_fetch_array($result);
+  		$table_content.="<tr><td><b>First Name:</b></td>
+						  <td>".$result['FirstName']."</td>
+						  </tr>
+						  <tr>
+						  <td><b>Last Name:</b></td>
+						  <td>".$result['LastName']."</td>
+						  </tr>
+						  <tr>
+						  <td><b>Middle Name::</b></td>
+						  <td>".$result['MiddleName']."</td>
+						  </tr>
+						  <tr>
+						  <td><b>Email:</b></td>
+						  <td>".$result['UserName']."</td>
+						  </tr>
+						  <tr>
+						  <td><b>First Access Date:</b></td>
+						  <td>".$result['FirstAccessDate']."</td>
+						  </tr>
+						  <!--tr>
+						  <td><b></b></td>
+						  <!--TODO: Add here implementation for lastaccessdate update it on login-->
+						  <td></td>
+						 </tr-->";
+	}
+	
 echo <<<EOT
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
   <h1 class="page-header">My Profile</h1>
@@ -875,62 +1193,18 @@ echo <<<EOT
 
 <div class="col-sm-9 col-sm-offset-3 col-md-5 col-md-offset-2 main">
 	<table class="table">
-  		<tr>
-  			<th>My Profile</th>
-  			<th></th>
-  		</tr>
-  		<tr>
-  			<td><b>First Name:</b></td>
-  			<td>Name</td>
-  		</tr>
-  		<tr>
-  			<td><b>Middle Name:</b></td>
-  			<td>Name</td>
-  		</tr>
-  		<tr>
-  			<td><b>Last Name:</b></td>
-  			<td>Name</td>
-  		</tr>
-  		<tr>
-  			<td><b>Email:</b></td>
-  			<td>email@email.com</td>
-  		</tr>
-  		<tr>
-  			<td><b>Title:</b></td>
-  			<td>Title</td>
-  		</tr>
-  		<tr>
-  			<td><b>Position:</b></td>
-  			<td>Position</td>
-  		</tr>
-  		<tr>
-  			<td><b>Office Location:</b></td>
-  			<td>Room</td>
-  		</tr>
-  		<tr>
-  			<td><b>Bio:</b></td>
-  			<td>Bio</td>
-  		</tr>
-  		<tr>
-  			<td><b>Bio-Photo</b></td>
-  			<td>Headshot</td>
-  		</tr>
+  		{$table_content}
 	</table>
 	<!-- The following need to be delete after PHP implementation. -->
-	<div class="form-group">
-		<div class="col-sm-offset-1 col-sm-10">
-			Note1: Current DB Design wouldn't let a faculty edit his or her profile in FACULTY table. 
-					Since current DB Design, assume only instance of ADMIN can Create, Read, Update, delete FACULTY table.<br>	
-		</div>
-	</div>
 	<div class="col-sm-offset-0 col-sm-10">
 	<br/>
-		<button type="submit" class="btn btn-primary btn-lg">
+		<!--button type="submit" class="btn btn-primary btn-lg">
 			Edit My Profile
-		</button>
+		</button-->
 	</div>	
 </div>
 EOT;
+
 	}
 	else if($requestedPage == 'help')
 	{

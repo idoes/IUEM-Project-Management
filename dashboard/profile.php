@@ -1,7 +1,17 @@
 <?php
 	include_once('./php/header.php');
-?>
+	include_once('dbconnect.php');
+	
+	$table_content = "";
 
+	if($_SESSION['ACCESS_LEVEL'] === 'SUPER_ADMIN')
+	{
+		$result = mysql_query("SELECT "
+	} else {
+		
+	}
+	
+echo <<<EOT
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
   <h1 class="page-header">My Profile</h1>
 </div>
@@ -58,12 +68,12 @@
 	</div>
 	<div class="col-sm-offset-0 col-sm-10">
 	<br/>
-		<button type="submit" class="btn btn-primary btn-lg">
+		<!--button type="submit" class="btn btn-primary btn-lg">
 			Edit My Profile
-		</button>
+		</button-->
 	</div>	
 </div>
+EOT;
 
-<?php
 	include_once('./php/footer.php');
 ?>

@@ -1,8 +1,5 @@
 <?php
-	if (session_status() == PHP_SESSION_NONE) 
-	{
-    	session_start();
-	}
+    session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -76,7 +73,9 @@
 EOT;
 			}
 		} else {
-			header("Location: ../../login.php?message=denied");			
+			echo isset($_SESSION['ACCESS_LEVEL']) ? 'true' : 'false';
+			die();
+			header("Location: ../login.php?message=denied");			
 		}
 	?>
     <!--li><a href="#">Create Faculty</a></li>

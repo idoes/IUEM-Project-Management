@@ -70,7 +70,7 @@ function pwdValidate($field)
 		$number = false;
 		$chars = str_split($field);
 		for($i = 0; $i<strlen($field); $i++){
-			if (preg_match("/[A-Za-z]/",$chars[$i])){
+			if (preg_match("/[\w]/",$chars[$i])){
 				$letter = true;
 				break;
 			}

@@ -27,7 +27,7 @@
 				'<br>Your UserName is '.$userName.
 				'<br>Your Password is '.$password.
 				'<br>Please click the following link in order to finish registration preocess<br>'.
-				'http://corsair.cs.iupui.edu:22071/lab4/resetPassword.php?theQueryString='.$code;
+				'http://corsair.cs.iupui.edu:22071/IUEM/dashboard/validate.php?theQueryString='.$code;
 		$mailer = new Mail();
 	
 		if (($mailer->sendMail($emailAddress, $firstName, $subject, $body)) == true)
@@ -158,7 +158,7 @@
 			$field = mysql_fetch_object($result);
 			$count = $field -> COUNTER;
 			//test
-			print "Email Record occur as counter: $count <br>";
+			//print "Email Record occur as counter: $count <br>";
 			
 			
 			
@@ -174,7 +174,7 @@
 				$returnObject= mysql_fetch_object($resultIsActive);
 				$isActive = $returnObject -> IS_ACTIVE;
 				//test
-				print "is Active: $isActive<br>";
+				//print "is Active: $isActive<br>";
 				
 				if($isActive === "NO")
 				{
@@ -183,7 +183,7 @@
 					//send Email
 					$activationCode2 = sendEmail($email, $firstName, $email, $password);
 					//test
-					print "ActivationCode2: $activationCode2<br>";
+					//print "ActivationCode2: $activationCode2<br>";
 					//Upgrade ADIMN.ActivationCode
 					$sqlUpgradeACode = "UPDATE A_ADMIN
 										SET ActivationCode = '$activationCode2',
@@ -233,6 +233,7 @@
 				if ($result)
 				{
 					$interactiveMessage .= "You information has been inserted into Database successfully.";
+					header('Refresh: 3; URL=dashboard.php?redirect=create-admin');
 				}
 				else 
 				{
@@ -274,7 +275,7 @@
 			//screen out the issues at the top of page
 			if ($interactiveMessage != "")
 			{
-				print $interactiveMessage;
+				print $interactiveMessage."<br/><br/>";
 			}
 			$interactiveMessage = "";
 			?>
