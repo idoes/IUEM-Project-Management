@@ -1,14 +1,69 @@
 <?php
-	include_once('./php/header.php');
 	include_once('dbconnect.php');
-	
+	include_once('php/header.php');
 	$table_content = "";
-
 	if($_SESSION['ACCESS_LEVEL'] === 'SUPER_ADMIN')
 	{
-		$result = mysql_query("SELECT "
-	} else {
+		$result = mysql_query(" SELECT *
+								FROM A_ADMIN
+								WHERE AdminID = ".$_SESSION['UID'].";", $conn);
+																
+		$result = mysql_fetch_array($result);
 		
+  		$table_content.="<tr><td><b>Email:</b></td>
+						  <td>".$result['Email']."</td>
+						  </tr>
+						  <tr>
+						  <td><b>First Access Date:</b></td>
+						  <td>".$result['FirstAccessDate']."</td>
+						  </tr>
+						  <tr>
+						  <td><b>Last Access Date:</b></td>
+						  <td>".$result['LastAccessDate']."</td>
+						  </tr>
+						  <tr>
+						  <td><b>First Name:</b></td>
+						  <td>".$result['FirstName']."</td>
+						  </tr>
+						  <tr>
+						  <td><b>Last Name:</b></td>
+						  <td>".$result['LastName']."</td>
+						  </tr>
+						  <tr>
+						  <td><b>Middle Name:</b></td>
+						  <td>".$result['MiddleName']."</td>
+						 </tr>";
+		
+	} else if($_SESSION['ACCESS_LEVEL'] === 'FACULTY') {
+		$result = mysql_query(" SELECT *
+								FROM A_FACULTY
+								WHERE FacultyID = ".$_SESSION['UID'].";", $conn);
+																
+		$result = mysql_fetch_array($result);
+  		$table_content.="<tr><td><b>First Name:</b></td>
+						  <td>".$result['FirstName']."</td>
+						  </tr>
+						  <tr>
+						  <td><b>Last Name:</b></td>
+						  <td>".$result['LastName']."</td>
+						  </tr>
+						  <tr>
+						  <td><b>Middle Name::</b></td>
+						  <td>".$result['MiddleName']."</td>
+						  </tr>
+						  <tr>
+						  <td><b>Email:</b></td>
+						  <td>".$result['UserName']."</td>
+						  </tr>
+						  <tr>
+						  <td><b>First Access Date:</b></td>
+						  <td>".$result['FirstAccessDate']."</td>
+						  </tr>
+						  <!--tr>
+						  <td><b></b></td>
+						  <!--TODO: Add here implementation for lastaccessdate update it on login-->
+						  <td></td>
+						 </tr-->";
 	}
 	
 echo <<<EOT
@@ -18,54 +73,9 @@ echo <<<EOT
 
 <div class="col-sm-9 col-sm-offset-3 col-md-5 col-md-offset-2 main">
 	<table class="table">
-  		<tr>
-  			<th>My Profile</th>
-  			<th></th>
-  		</tr>
-  		<tr>
-  			<td><b>First Name:</b></td>
-  			<td>Name</td>
-  		</tr>
-  		<tr>
-  			<td><b>Middle Name:</b></td>
-  			<td>Name</td>
-  		</tr>
-  		<tr>
-  			<td><b>Last Name:</b></td>
-  			<td>Name</td>
-  		</tr>
-  		<tr>
-  			<td><b>Email:</b></td>
-  			<td>email@email.com</td>
-  		</tr>
-  		<tr>
-  			<td><b>Title:</b></td>
-  			<td>Title</td>
-  		</tr>
-  		<tr>
-  			<td><b>Position:</b></td>
-  			<td>Position</td>
-  		</tr>
-  		<tr>
-  			<td><b>Office Location:</b></td>
-  			<td>Room</td>
-  		</tr>
-  		<tr>
-  			<td><b>Bio:</b></td>
-  			<td>Bio</td>
-  		</tr>
-  		<tr>
-  			<td><b>Bio-Photo</b></td>
-  			<td>Headshot</td>
-  		</tr>
+  		{$table_content}
 	</table>
 	<!-- The following need to be delete after PHP implementation. -->
-	<div class="form-group">
-		<div class="col-sm-offset-1 col-sm-10">
-			Note1: Current DB Design wouldn't let a faculty edit his or her profile in FACULTY table. 
-					Since current DB Design, assume only instance of ADMIN can Create, Read, Update, delete FACULTY table.<br>	
-		</div>
-	</div>
 	<div class="col-sm-offset-0 col-sm-10">
 	<br/>
 		<!--button type="submit" class="btn btn-primary btn-lg">
@@ -74,6 +84,6 @@ echo <<<EOT
 	</div>	
 </div>
 EOT;
+	include_once('php/footer.php');
 
-	include_once('./php/footer.php');
 ?>

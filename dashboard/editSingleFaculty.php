@@ -184,7 +184,7 @@
 			
 			if($count != 0)
 			{
-				$interactiveMessage .= "<br>User name value is duplicated with others user name.<br>";
+				$interactiveMessage .= "User name value is duplicated with others user name.<br>";
 			}
 			else
 			{
@@ -215,9 +215,9 @@
 				{
 					$interactiveMessage .= "<br>The correponding record has been updated on Database.<br>
 		 							You will be directed to the manage faculty page in 3 seconds.<br>
-		 							Please do not perform any action on this page.<br><br><br><br>";
+		 							Please do not perform any action on this page.";
 					//TODO uncomment the following statement
-					header('Refresh: 3; URL=dashboard.php?redirect=manage-users');
+					header('Refresh: 3; URL=dashboard.php');
 				}
 				else
 				{
@@ -289,118 +289,122 @@
 	//screen out the issues at the top of page
 	if ($interactiveMessage != "")
 	{
-		print $interactiveMessage;
+		print "<div class=\"col-sm-6 col-sm-offset-3 col-md-10 col-md-offset-2 main\">
+	<div class=\"row bg-danger\">
+	 		<center>".$interactiveMessage."</center><br/>
+	 	</div>
+	    </div>";
 	}
 	$interactiveMessage = "";
 	?>
 	<div class="form-group">
-		<label for="username" class="col-sm-1 control-label">User Name:</label>
-		<div class="col-sm-4">
+		<label for="username" class="col-sm-2 control-label">User Name:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="username" placeholder="" name="username" 
 				value="<?php echo $userName; ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="userpassword" class="col-sm-1 control-label">User Password:</label>
-		<div class="col-sm-4">
+		<label for="userpassword" class="col-sm-2 control-label">User Password:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="lastname" placeholder="" name="userpassword"
 				value="<?php echo $userPassword; ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="firstaccessdate" class="col-sm-1 control-label">First Access Date:</label>
-		<div class="col-sm-4">
+		<label for="firstaccessdate" class="col-sm-2 control-label">First Access Date:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="firstaccessdate" placeholder="" name="firstaccessdate"
 				value="<?php echo $firstAccessDate; ?>" >
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="lastaccessdate" class="col-sm-1 control-label">Last Access Date:</label>
-		<div class="col-sm-4">
+		<label for="lastaccessdate" class="col-sm-2 control-label">Last Access Date:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="lastaccessdate" placeholder="" name="lastaccessdate"
 				value="<?php echo $lastAccessDate; ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="firstname" class="col-sm-1 control-label">First Name:</label>
-		<div class="col-sm-4">
+		<label for="firstname" class="col-sm-2 control-label">First Name:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="firstname" placeholder="" name="firstname"
 				value="<?php echo $firstName; ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="lastname" class="col-sm-1 control-label">Last Name:</label>
-		<div class="col-sm-4">
+		<label for="lastname" class="col-sm-2 control-label">Last Name:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="lastname" placeholder="" name="lastname"
 				value="<?php echo $lastName; ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="middlename" class="col-sm-1 control-label">Middle Name:</label>
-		<div class="col-sm-4">
+		<label for="middlename" class="col-sm-2 control-label">Middle Name:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="middlename" placeholder="" name="middlename"
 				value="<?php echo $middleName; ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="email" class="col-sm-1 control-label">Email:</label>
-		<div class="col-sm-4">
+		<label for="email" class="col-sm-2 control-label">Email:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="email" placeholder="" name="email"
 				value="<?php echo $email; ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="title" class="col-sm-1 control-label">Title:</label>
-		<div class="col-sm-4">
+		<label for="title" class="col-sm-2 control-label">Title:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="title" placeholder="" name="title"
 				value="<?php echo $title; ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="position" class="col-sm-1 control-label">Position:</label>
-		<div class="col-sm-4">
+		<label for="position" class="col-sm-2 control-label">Position:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="position" placeholder="" name="position"
 				value="<?php echo $position; ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="officeLocation" class="col-sm-1 control-label">Office Location:</label>
-		<div class="col-sm-4">
+		<label for="officeLocation" class="col-sm-2 control-label">Office Location:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="officeLocation" placeholder="" name="officeLocation"
 				value="<?php echo $officeLocation; ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="biotext" class="col-sm-1 control-label">Bio Text:</label>
-		<div class="col-sm-4">
+		<label for="biotext" class="col-sm-2 control-label">Bio Text:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="biotext" placeholder="" name="biotext"
 				value="<?php echo $bioText; ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="biophotolink" class="col-sm-1 control-label">Bio Photo Link:</label>
-		<div class="col-sm-4">
+		<label for="biophotolink" class="col-sm-2 control-label">Bio Photo Link:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="biophotolink" placeholder="" name="biophotolink"
 				value="<?php echo $bioPhotoLink; ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="cvfilelink" class="col-sm-1 control-label">CV File Link:</label>
-		<div class="col-sm-4">
+		<label for="cvfilelink" class="col-sm-2 control-label">CV File Link:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="cvfilelink" placeholder="" name="cvfilelink"
 				value="<?php echo $cvFileLink; ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="activationcode" class="col-sm-1 control-label">Activation Code:</label>
-		<div class="col-sm-4">
+		<label for="activationcode" class="col-sm-2 control-label">Activation Code:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="activationcode" placeholder="" name="activationcode"
 				value="<?php echo $activationCode; ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="isactivated" class="col-sm-1 control-label">Activated:</label>
-		<div class="col-sm-4">
+		<label for="isactivated" class="col-sm-2 control-label">Activated:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="isactivated" placeholder="" name="isactivated"
 				value="<?php echo $isActivated; ?>">
 		</div>

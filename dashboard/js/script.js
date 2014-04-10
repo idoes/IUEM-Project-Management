@@ -12,7 +12,7 @@ function init() {
 			return false;
 		}
 		var id = (($('.form-horizontal .control-group').length/2) + 1).toString();
-		$('.form-horizontal').append("<div class='form-group control-group'><label for='coInspector"+id+"' class=\"col-sm-1 control-label\">Co Inspector "+id+" Name</label><div class=\"col-sm-4\"><input autocomplete=\"off\" value=\"\" type=\"text\" list=\"txtHint\" class=\"form-control\" id=\"projectInspector"+id+"\" placeholder=\"Project Inspector "+id+" Name\" name=\"projectInspector"+id+"\" onkeyup=\"showHint(this.value)\"><datalist id=\"txtHint\"></datalist></div></div><div class=\"form-group control-group\"><label for=\"projectInspectorStartDate\" class=\"col-sm-1 control-label\">Co PI "+id+" Start Date</label><div class=\"col-sm-4\"><input value=\"\" type=\"text\" class=\"form-control\" id=\"startDateCOPI"+id+"\" placeholder=\"Project Inspector "+id+" Start Date\" name=\"startDateCOPI"+id+"\"></div></div>");
+		$('.form-horizontal').append("<div class='form-group control-group'><label for='coInspector"+id+"' class=\"col-sm-2 control-label\">Co PI "+id+" Name</label><div class=\"col-sm-6\"><input autocomplete=\"off\" value=\"\" type=\"text\" list=\"txtHint\" class=\"form-control\" id=\"projectInspector"+id+"\" placeholder=\"Project Inspector "+id+" Name\" name=\"projectInspector"+id+"\" onkeyup=\"showHint(this.value)\"><datalist id=\"txtHint\"></datalist></div></div><div class=\"form-group control-group\"><label for=\"projectInspectorStartDate\" class=\"col-sm-2 control-label\">Co PI "+id+" Start Date</label><div class=\"col-sm-6\"><input value=\"\" type=\"text\" class=\"form-control\" id=\"startDateCOPI"+id+"\" placeholder=\"Project Inspector "+id+" Start Date\" name=\"startDateCOPI"+id+"\"></div></div>");
 		createCalendar();
 	});
 
@@ -25,7 +25,19 @@ function init() {
 		$(".form-horizontal .control-group:last").remove();
 		$(".form-horizontal .control-group:last").remove();
 	});
-
+	
+	$(document).ready(function() {
+    	$('.AAA').dataTable({
+	    	"bPaginate": false,
+	        "bLengthChange": false,
+	        "bFilter": true,
+	        "bInfo": false,
+	        "bAutoWidth": false
+    	});
+	} );
+	
+	
+	createCalendar();
 }
 
 function createCalendar() {
@@ -77,47 +89,47 @@ function validateUserPanel() {
 	}
 }
 
-function loadPage(_page) {
-	//pass one of the following strings as _page
-	//create-user
-	//manage-users
-	//create-admin
-	//manage-admins
-	//create-project
-	//manage-projects
-	//profile
-	//help
-
-	xmlhttp = new XMLHttpRequest();
-
-	if (_page == 'create-user') {
-		xmlhttp.open("GET", "php/ajax_content.php?ajaxID=create-user", true);
-	} else if (_page == 'manage-users') {
-		xmlhttp.open("GET", "php/ajax_content.php?ajaxID=manage-users", true);
-	} else if (_page == 'create-admin') {
-		xmlhttp.open("GET", "php/ajax_content.php?ajaxID=create-admin", true);
-	} else if (_page == 'manage-admins') {
-		xmlhttp.open("GET", "php/ajax_content.php?ajaxID=manage-admins", true);
-	} else if (_page == 'create-project') {
-		xmlhttp.open("GET", "php/ajax_content.php?ajaxID=create-project", true);
-	} else if (_page == 'manage-projects') {
-		xmlhttp.open("GET", "php/ajax_content.php?ajaxID=manage-projects", true);
-	} else if (_page == 'profile') {
-		xmlhttp.open("GET", "php/ajax_content.php?ajaxID=profile", true);
-	} else if (_page == 'help') {
-		xmlhttp.open("GET", "php/ajax_content.php?ajaxID=help", true);
-	}
-
-	xmlhttp.send();
-
-	xmlhttp.onreadystatechange = function() {
-		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-			document.getElementById("ajax-page-content").innerHTML = xmlhttp.responseText;
-			createCalendar();
-			init();
-		}
-	}
-}
+// function loadPage(_page) {
+	// //pass one of the following strings as _page
+	// //create-user
+	// //manage-users
+	// //create-admin
+	// //manage-admins
+	// //create-project
+	// //manage-projects
+	// //profile
+	// //help
+// 
+	// xmlhttp = new XMLHttpRequest();
+// 
+	// if (_page == 'create-user') {
+		// xmlhttp.open("GET", "php/ajax_content.php?ajaxID=create-user", true);
+	// } else if (_page == 'manage-users') {
+		// xmlhttp.open("GET", "php/ajax_content.php?ajaxID=manage-users", true);
+	// } else if (_page == 'create-admin') {
+		// xmlhttp.open("GET", "php/ajax_content.php?ajaxID=create-admin", true);
+	// } else if (_page == 'manage-admins') {
+		// xmlhttp.open("GET", "php/ajax_content.php?ajaxID=manage-admins", true);
+	// } else if (_page == 'create-project') {
+		// xmlhttp.open("GET", "php/ajax_content.php?ajaxID=create-project", true);
+	// } else if (_page == 'manage-projects') {
+		// xmlhttp.open("GET", "php/ajax_content.php?ajaxID=manage-projects", true);
+	// } else if (_page == 'profile') {
+		// xmlhttp.open("GET", "php/ajax_content.php?ajaxID=profile", true);
+	// } else if (_page == 'help') {
+		// xmlhttp.open("GET", "php/ajax_content.php?ajaxID=help", true);
+	// }
+// 
+	// xmlhttp.send();
+// 
+	// xmlhttp.onreadystatechange = function() {
+		// if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+			// document.getElementById("ajax-page-content").innerHTML = xmlhttp.responseText;
+			// createCalendar();
+			// init();
+		// }
+	// }
+// }
 
 function showHint(str) {
 	var xmlhttp;

@@ -1,6 +1,7 @@
 <?php
-	include_once('./php/header.php');
-?>
+	include_once('dbconnect.php');
+	include_once('php/header.php');
+echo <<<EOT
  <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
       <h1 class="page-header">Manage Projects</h1>
  </div>    
@@ -9,89 +10,78 @@
       <div class="row">	        
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 			<div class="table-responsive">
-				<table class="table">
-					<tr>
-						<th>#</th>
-						<th>Project Title</th>
-						<th>Created On</th>
-						<th>Members</th>
-						<th>Edit</th>
-					</tr>
-					<?php
-						//TODO
-						//Add for loop to go through project DB and print out tr/td info
-					?>
-					<tr>
-						<td>1</td>
-						<td>Project 1</td>
-						<td>2/14/2014</td>
-						<td>
-							<ul>
-							  <li>User 1 (Creator)</li>
-							  <li>User 2</li>
-							  <li>User 3</li>
-							</ul>
-						</td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-					<tr>
-						<td>2</td>
-						<td>Project 2</td>
-						<td>2/04/2014</td>
-						<td>
-							<ul>
-							  <li>User 1 (Creator)</li>
-							  <li>User 2</li>
-							  <li>User 3</li>
-							  <li>User 4</li>
-							</ul>
-						</td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-					<tr>
-						<td>3</td>
-						<td>Project 3</td>
-						<td>1/01/2013</td>
-						<td>
-							<ul>
-							  <li>User 1 (Creator)</li>
-							</ul>
-						</td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-					<tr>
-						<td>4</td>
-						<td>Project 4</td>
-						<td>9/10/2012</td>
-						<td>
-							<ul>
-							  <li>User 1 (Creator)</li>
-							  <li>User 2</li>
-							</ul>
-						</td>
-						<td><a href="#">Edit</a></td>
-					</tr>
-					<tr>
-						<td>5</td>
-						<td>Project 5</td>
-						<td>1/29/2013</td>
-						<td>
-							<ul>
-							  <li>User 1 (Creator)</li>
-							  <li>User 2</li>
-							  <li>User 3</li>
-							  <li>User 4</li>
-							  <li>User 5</li>
-							</ul>
-						</td>
-						<td><a href="#">Edit</a></td>
-					</tr>
+				<table class="table AAA table-bordered">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Project Title</th>
+							<th>Created On</th>
+							<th>PI</th>
+							<th>Faculty Options</th>
+							<th>Add Files</th>
+							<th>Edit</th>
+							<th>Delete</th>
+						</tr>
+					</thead>
+					<tbody>
+EOT;
+	//TODO
+	//Add for loop to go through project DB and print out tr/td info
+	$result = mysql_query(" SELECT *
+							FROM A_PROJECT;");
+
+	$num_rows = mysql_num_rows($result);
+	
+	$i = 1;
+
+	while($row = mysql_fetch_assoc($result))
+	{
+		$project_id = $row['ProjectID'];
+		echo "<tr><td>".$i."</td>";
+		echo "<td>".$row['Title']."</td>";
+		echo "<td>".$row['InitialDate']."</td>";
+		$user_query = mysql_query(" SELECT FacultyID
+									from A_MANAGEMENT
+									WHERE ProjectID = '".$project_id."'
+									AND Responsibility='PI' LIMIT 1;");
+											
+		if(mysql_num_rows($user_query) == 0)
+		{
+			$user_query=array();
+			$user_query['FacultyID'] = 'PI Not Set';
+		} else {
+			$user_query = mysql_fetch_array($user_query);
+	                $faculty_query = mysql_query( " SELECT FirstName, LastName
+                                                        FROM A_FACULTY
+                                                        WHERE FacultyID = '".$user_query['FacultyID']."'
+                                                        LIMIT 1;" );
+                                                                                
+	                $faculty_query = mysql_fetch_array($faculty_query);
+		}
+
+		if($user_query['FacultyID'] !== 'PI Not Set')
+		{
+			echo "<td>".$faculty_query['FirstName']." ".$faculty_query['LastName']."</td>";
+		} else {
+			echo "<td>PI Not Set</td>";	
+		}
+		echo "<td><button type='button' class='btn btn-primary btn-xs' onclick=window.location='editAssociatedFaculty.php?projectID=$project_id'>Add/Remove Faculty</button></td>";
+		echo "<td><button type='button' class='btn btn-primary btn-xs' onclick=window.location='fileUpload.php?projectID=$project_id'>Add Files</button></td>";
+		echo "<td><button type='button' class='btn btn-primary btn-xs' onclick=window.location='editSingleProject.php?projectID=$project_id'>Edit Project</button></td>"; 
+		echo "<td><button type='button' class='btn btn-danger btn-xs' onclick=window.location='deleteProject.php?projectID=$project_id'>Delete Project</button></td>";
+		$i++;
+	}
+	
+
+echo <<<EOT
+				</tbody>
 				</table>
 			</div>
 		</div>
 	</div>
 </div>
+EOT;
 
-<?php
-	include_once('./php/footer.php');
+	include_once('php/footer.php');
+
 ?>

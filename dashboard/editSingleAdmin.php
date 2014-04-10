@@ -254,77 +254,83 @@
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 	<h1 class="page-header">Edit an Administrator</h1>
 </div>
-    
-<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-<form action="editSingleAdmin.php" class="form-horizontal" role="form" method="post">
-	<!-- screen out interative message which is deliverd from server. -->
+
 	<?php 
 	//screen out the issues at the top of page
 	if ($interactiveMessage != "")
 	{
-		print $interactiveMessage;
+		print "<div class=\"col-sm-6 col-sm-offset-3 col-md-10 col-md-offset-2 main\">
+	<div class=\"row bg-danger\">
+	 		<center><br/>".$interactiveMessage."<br/></center>
+	 	</div>
+	    </div>";
 	}
 	$interactiveMessage = "";
 	?>
+    
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+<form action="editSingleAdmin.php" class="form-horizontal" role="form" method="post">
+	<!-- screen out interative message which is deliverd from server. -->
+
 	<div class="form-group">
-		<label for="firstname" class="col-sm-1 control-label">First Name:</label>
-		<div class="col-sm-4">
+		<label for="firstname" class="col-sm-2 control-label">First Name:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="firstname" placeholder="" name="firstname" 
 				value="<?php echo $firstName; ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="lastname" class="col-sm-1 control-label">Last Name:</label>
-		<div class="col-sm-4">
+		<label for="lastname" class="col-sm-2 control-label">Last Name:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="lastname" placeholder="" name="lastname"
 				value="<?php echo $lastName; ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="middlename" class="col-sm-1 control-label">Middle Name:</label>
-		<div class="col-sm-4">
+		<label for="middlename" class="col-sm-2 control-label">Middle Name:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="middlename" placeholder="" name="middlename"
 				value="<?php echo $middleName; ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="username" class="col-sm-1 control-label">User Name:</label>
-		<div class="col-sm-4">
+		<label for="username" class="col-sm-2 control-label">User Name:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="username" placeholder="" name="username"
 				value="<?php echo $userName; ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="userpassword" class="col-sm-1 control-label">User Password:</label>
-		<div class="col-sm-4">
+		<label for="userpassword" class="col-sm-2 control-label">User Password:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="userpassword" placeholder="" name="userpassword"
 				value="<?php echo $userPassword; ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="activationcode" class="col-sm-1 control-label">Activation Code:</label>
-		<div class="col-sm-4">
+		<label for="activationcode" class="col-sm-2 control-label">Activation Code:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="activationcode" placeholder="" name="activationcode"
 				value="<?php echo $activationCode; ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="isactivated" class="col-sm-1 control-label">Activated:</label>
-		<div class="col-sm-4">
+		<label for="isactivated" class="col-sm-2 control-label">Activated:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="isactivated" placeholder="" name="isactivated"
 				value="<?php echo $isActivated; ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="firstaccessdate" class="col-sm-1 control-label">First Access Date:</label>
-		<div class="col-sm-4">
+		<label for="firstaccessdate" class="col-sm-2 control-label">First Access Date:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="firstaccessdate" placeholder="" name="firstaccessdate"
 				value="<?php echo $firstAccessDate; ?>" disabled>
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="lastaccessdate" class="col-sm-1 control-label">Last Access Date:</label>
-		<div class="col-sm-4">
+		<label for="lastaccessdate" class="col-sm-2 control-label">Last Access Date:</label>
+		<div class="col-sm-6">
 			<input type="text" class="form-control" id="lastaccessdate" placeholder="" name="lastaccessdate"
 				value="<?php echo $lastAccessDate; ?>" disabled>
 		</div>

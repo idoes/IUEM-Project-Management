@@ -1,6 +1,6 @@
 <?php
-	include_once('./php/header.php');
 	require_once "dbconnect.php";
+	require_once "php/header.php";
 	
 	//always initialized variables to be used
 	/*
@@ -47,8 +47,8 @@
 		$AdminInstance->addChild('FirstName', $row['FirstName']);
 		$AdminInstance->addChild('LastName', $row['LastName']);
 		$AdminInstance->addChild('MiddleName', $row['MiddleName']);
-		//$AdminInstance->addChild('ActivationCode', $row['ActivationCode']);
-		//$AdminInstance->addChild('IsActive', $row['IsActive']);
+		$AdminInstance->addChild('ActivationCode', $row['ActivationCode']);
+		$AdminInstance->addChild('IsActive', $row['IsActive']);
 	
 	}//end while ($row = mysql_fetch_assoc($result))
 	
@@ -58,7 +58,7 @@
 	$fp = fopen("xml/Table-Solo-Admin.xml","wb");
 	fwrite($fp, $xml->asXML());
 	fclose($fp);
-?>
+echo <<<EOT
  <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
       <!-- TODO use session variable to get user's full name -->
       <h1 class="page-header">Current Admins</h1>
@@ -69,22 +69,24 @@
       <div class="row">	        
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 			<div class="table-responsive">
-				<table class="table">
-					<tr>
-						<th>#</th>
-						<th>First Name</th>
-						<th>Last Name</th>
-						<th>Middle Name</th>
-						<th>User Name</th>
-						<th>User Password</th>
-						<th>Activation Code</th>
-						<th>Activated</th>
-						<th>First Access Date</th>
-						<th>Last Access Date</th>
-						<th>Edit</th>
-					</tr>
-					<?php
-						
+				<table class="table table-bordered AAA">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>First Name</th>
+							<th>Last Name</th>
+							<th>Middle Name</th>
+							<th>User Name</th>
+							<th>User Password</th>
+							<th>Activate</th>
+							<th>Active</th>
+							<th>First Access Date</th>
+							<th>Last Access Date</th>
+							<th>Edit</th>
+						</tr>
+					</thead>
+					<tbody>
+EOT;
 						//TODO
 						//Add for loop to go through user DB and print out tr/td info
 						$adminRecord = simplexml_load_file('xml/Table-Solo-Admin.xml');
@@ -105,23 +107,26 @@
 								<td>$index->MiddleName</td>
 								<td>$index->Email</td>
 								<td>$index->Password</td>
-								<td>$index->ActivationCode</td>
+								<td><button type="button" class="btn btn-primary btn-xs" onclick="window.location='validate.php?theQueryString={$index->ActivationCode}'">Verify</td></td>
 								<td>$index->IsActive</td>
 								<td>$index->FirstAccessDate</td>
 								<td>$index->LastAccessDate</td>
-								<td><a href="editSingleAdmin.php?$theQueryString">Edit</a></td>
+								<td><button type="button" class="btn btn-primary btn-xs" onclick="window.location='editSingleAdmin.php?$theQueryString'">Edit</td>
 							</tr>
 HERE;
 							//test
 							//echo "<br>" .$i;
 						}//end foreach ($adminRecord as $index)
-					?>
+echo <<<EOT
+					</tbody>
 				</table>
 			</div>
 		</div>
 	</div>
 </div>
+EOT;
 
-<?php
-	include_once('./php/footer.php');
+	require_once "php/footer.php";
+
+
 ?>

@@ -4,8 +4,14 @@ include_once('dbconnect.php');
 
 	$message_out = "";
 	$interactive_message = "";
-	//$theProjectID = $_GET['projectID'];
-	$theProjectID = 1;
+	if(isset($_GET['projectID']))
+	{
+		$theProjectID = $_GET['projectID'];
+	} else {
+		$theProjectID = $_POST['projectID'];
+	}
+	//$theProjectID = 1;
+	$attachmentArray = array();
 	
 	//check file directory issue
 	if (!file_exists("upload/project_$theProjectID/")) 
@@ -73,7 +79,7 @@ include_once('dbconnect.php');
 			//$interactive_message .= $myFileArray["tmp_name"];
 		    
 		    // preserve file from temporary directory
-		    echo $success = move_uploaded_file($myFileArray["tmp_name"],
+		    $success = move_uploaded_file($myFileArray["tmp_name"],
 		        UPLOAD_DIR . $name);
 		    if (!$success) 
 		    { 
@@ -84,9 +90,29 @@ include_once('dbconnect.php');
 				$interactive_message .= "<br>File has been successully uploaded to the directory: " . UPLOAD_DIR;
 				
 				//DB stuff
-				$request = mysql_query("INSERT INTO  A_ATTACHMENT (AttachmentID, ProjectID, ItemServerLink) 
+				//check first 
+				$thisRequest = mysql_query("SELECT COUNT(*) AS COUNTER
+												FROM A_ATTACHMENT
+												WHERE ProjectID ='".$theProjectID."'AND
+														ItemServerLink = '".UPLOAD_DIR.$name."';", $conn) 
+								or $interactive_message .= "<br>Error Occur";
+				$thisObject = mysql_fetch_object($thisRequest);
+				$thisCounter = $thisObject->COUNTER;
+				
+				//test
+				
+				if ($thisCounter == 0)
+				{
+					$request = mysql_query("INSERT INTO  A_ATTACHMENT (AttachmentID, ProjectID, ItemServerLink) 
 										VALUES (NULL, ".$theProjectID.", '".UPLOAD_DIR.$name."');", $conn) 
 								or $interactive_message .= "<br>Error Occur";
+				}else
+				{
+					//TODO
+					//$interactive_message .= "<br>New record can not be inserted since the same file name has occur". 
+					//								"belong to this project .";
+				}
+				
 				 
 			}
 				
@@ -101,38 +127,94 @@ include_once('dbconnect.php');
 <?php
 	
 
-	echo <<<EOT
-	   <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-	      <h1 class="page-header">$interactive_message</h1>
+
+if($interactive_message!=="")
+{
+echo <<<EOT
+	   <div class="col-sm-6 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+	  	<div class="row bg-danger">
+	 		<center>$interactive_message</center><br/>
+	 	</div>
 	    </div>
+EOT;
+} 	
+echo <<<EOT
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 			<form action="fileUpload.php" class="form-horzontal" role="form" method="POST" enctype="multipart/form-data">
 				<div class="form-group">
-					<label for="projecttitle" class="col-sm-1 control-label">Upload File to the project named as: {$theProjectTitle}</label>
+					<label for="projecttitle" class="col-sm-2 control-label">Upload to: {$theProjectTitle}</label>
 				</div>
-				<div class="form-group">
-					<div class="col-sm-offset-1 col-sm-10">
-						<br/>
-						Upload This File:<br />
+					<div class="col-sm-offset-2">
 						<input name="userfile" type="file" /><br />
-					</div>
-				</div>
-				
-				
-				
+					</div>				
 				<div class="form-group">
-					<div class="col-sm-offset-1 col-sm-10">
+					<div class="col-sm-offset-2">
 						<br/>
 						<button action="fileUpload.php" type="submit" class="btn btn-primary">
 							File Upload
 						</button>
 					</div>
 				</div>
+				
+				<input name="projectID" type="hidden" value="$theProjectID">
 			</form>
 			</div>
 		</div>
 	</div>
 EOT;
+	//sencond HTML part
+	echo <<<EOT
+	<div class="container-fluid">
+		<div class="row">	        
+    		<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+			<div class="table-responsive">
+			<table class="table AAA table-bordered">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Project Title</th>
+						<th>File Name</th>
+						<th>Download</th>
+						<th>Delete</th>
+					</tr>
+				</thead>
+				<tbody>
+EOT;
+	
+	$attachmentRequest2 = mysql_query("SELECT Title
+										FROM A_PROJECT
+										WHERE ProjectID =".$theProjectID.";", $conn);
+	$thisResult = mysql_fetch_assoc($attachmentRequest2);
+	$projectTitle = $thisResult['Title']; 
+	
+	
+	$attachmentRequest1 = mysql_query("SELECT * 
+										FROM A_ATTACHMENT
+										WHERE ProjectID =".$theProjectID.";", $conn);	
+	$amoutRow = mysql_num_rows($attachmentRequest1);	
+	$i = 1;
+	while($row = mysql_fetch_assoc($attachmentRequest1))
+	{
+		//echo "!!!!here!!!!" . $row['ItemServerLink'];
+		echo "<tr><td>".$i."</td>";
+		echo "<td>".$projectTitle."</td>";
+		echo "<td>".basename($row['ItemServerLink'])."</td>";
+		echo "<td><button type='button' class='btn btn-primary btn-xs' onclick=window.location='".$row['ItemServerLink']."'>Download</button></td>"; 
+		echo "<td><button type='button' class='btn btn-danger btn-xs' onclick=window.location='deleteFile.php?attachmentID=".$row['AttachmentID']."'>Delete</button></td>";
+		echo "</tr>";
+		$i++;
+	}
+
+	echo <<<EOT
+			</tbody>
+			</table>
+			</div>
+			</div>
+		</div>
+	</div>
+EOT;
+
+include_once('php/footer.php');
 ?>

@@ -1,11 +1,12 @@
 <?php
-	include_once('./php/header.php');
-	include_once('./inc/utilityFunction.php');
+	include_once('inc/utilityFunction.php');
 	require_once("mail/mail.class.php");
 	require_once("dbconnect.php");
+	include_once('./php/header.php');
 	
 	/********************************************************************
 	* PHP - Page Initialization
+	 *
 	***********************************************************************/
 	$interactiveMessage = "";
 	$password 			= "";
@@ -48,8 +49,6 @@
 		return $code;
 	}
 
-?>   
-<?php 
 	/********************************************************************
 	 * PHP - Page Initialization
 	***********************************************************************/
@@ -146,7 +145,7 @@
 			$count = $theObject -> COUNTER;
 			
 			//test
-			print "<br>Email Record occur as counter: $count <br>";
+			//print "<br>Email Record occur as counter: $count <br>";
 			
 			//the Record has already occur
 			if ($count != 0)
@@ -242,7 +241,6 @@
 				if ($resultInsertion)
 				{
 					$interactiveMessage .= "<br>You information has been inserted into Database successfully.";
-					header('Refresh: 3; URL=dashboard.php?redirect=create-user');
 				}
 				else
 				{
@@ -256,108 +254,87 @@
 		}//END if ($firstNameIsOk && $lastNameIsOk && $passwordIsOk && $emailIsOk)
 	}
 
-
-
-
-
-?>
-   <!--********************************************************************
-		* HTML part 
-	***********************************************************************-->		
-    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+echo <<<EOT
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
       <h1 class="page-header">Create Faculty User</h1>
     </div>
+EOT;
+
+if ($interactiveMessage != "")
+{
+	print "<div class=\"col-sm-6 col-sm-offset-3 col-md-10 col-md-offset-2 main\">
+	<div class=\"row bg-danger\">
+	 		<center>".$interactiveMessage."</center><br/>
+	 	</div>
+	    </div>";
+}
+$interactiveMessage = "";
+
+echo <<<EOT
+
     
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 	<form action="createFaculty.php" class="form-horizontal" role="form" method="post">
 			
-			<!-- screen out interative message which is deliverd from server. -->
-			<?php 
+EOT;
 			//screen out the issues at the top of page
-			if ($interactiveMessage != "")
-			{
-				print $interactiveMessage;
-			}
-			$interactiveMessage = "";
-			?>
 			
-			<div class="form-group">
-				<label for="firstname" class="col-sm-1 control-label">First Name:</label>
-				<div class="col-sm-4">
-					<input type="text" class="form-control" id="firstname" placeholder="First Name (Required)" name="firstname">
-				</div>
+echo <<<EOT
+<!--div class="col-sm-9 col-sm-offset-1 col-md-4 col-md-offset-1"-->
+		<div class="form-group">
+			<label for="firstname" class="col-sm-2 control-label">First Name:</label>
+			<div class="col-sm-6">
+				<input type="text" class="form-control" id="firstname" placeholder="First Name (Required)" name="firstname">
 			</div>
-			<div class="form-group">
-				<label for="middlename" class="col-sm-1 control-label">Middle Name:</label>
-				<div class="col-sm-4">
-					<input type="text" class="form-control" id="middlename" placeholder="Middle Name" name="middlename">
-				</div>
+		</div>
+		<div class="form-group">
+			<label for="middlename" class="col-sm-2 control-label">Middle Name:</label>
+			<div class="col-sm-6">
+				<input type="text" class="form-control" id="middlename" placeholder="Middle Name" name="middlename">
 			</div>
-			<div class="form-group">
-				<label for="lastname" class="col-sm-1 control-label">Last Name:</label>
-				<div class="col-sm-4">
-					<input type="text" class="form-control" id="lastname" placeholder="Last Name (Required)" name="lastname">
-				</div>
+		</div>
+		<div class="form-group">
+			<label for="lastname" class="col-sm-2 control-label">Last Name:</label>
+			<div class="col-sm-6">
+				<input type="text" class="form-control" id="lastname" placeholder="Last Name (Required)" name="lastname">
 			</div>
-			<div class="form-group">
-				<label for="email" class="col-sm-1 control-label">Email</label>
-				<div class="col-sm-4">
-					<input type="email" class="form-control" id="email" placeholder="Email (Required)" name="email">
-				</div>
+		</div>
+		<div class="form-group">
+			<label for="email" class="col-sm-2 control-label">Email</label>
+			<div class="col-sm-6">
+				<input autocomplete="off" type="email" class="form-control" id="email" placeholder="Email (Required)" name="email">
 			</div>
-			<div class="form-group">
-				<label for="password" class="col-sm-1 control-label">Password:</label>
-				<div class="col-sm-4">
-					<input type="text" class="form-control" id="password" placeholder="<?php echo $password;?>" name="password" disabled>
-				</div>
+		</div>
+		<div class="form-group">
+			<label for="password" class="col-sm-2 control-label">Password:</label>
+			<div class="col-sm-6">
+				<input type="text" class="form-control" id="password" placeholder="{$password}" name="password" disabled>
 			</div>
-			<!-- see note 4  
-			<div class="form-group">
-				<label for="position" class="col-sm-1 control-label">Access Level:</label>
-				<div class="col-sm-5">
-					<input type="text" class="form-control" id="accessLevel" placeholder="Administrator or Faculty Member (Required)" name="accessLevel">
-				</div>
+		</div>
+		<!-- see note 4  
+		<div class="form-group">
+			<label for="position" class="col-sm-2 control-label">Access Level:</label>
+			<div class="col-sm-5">
+				<input type="text" class="form-control" id="accessLevel" placeholder="Administrator or Faculty Member (Required)" name="accessLevel">
 			</div>
-			-->
-			<div class="form-group">
-				<div class="col-sm-offset-1 col-sm-10">
-					Note1: Only Administrator can create, view, update, and delete an Database user record.<br>
-					Note2: We have perfomed create rule in this file. we may integrate update rule and delete rule with
-							view rule since updating and deleting need to be performed only after viewing.<br>
-					Note3: This file is intended to perfom the same action as createUser.php. <br>
-					Task1:	Database Table[ADMIN] add attribute MiddleName.<br>
-					Task2: 	create a file to view || update || delete Database user.<br>
-					Note4: If the definition for ADMIN table is all the people who can access this DB and the definition for 
-							FACULTY is all the people who have been involved into a project as Researcher, or PI, or Co-PI,
-							then ADMIN-AccessLevel attribute is useless.<br>
-					Note5: Assume we have ADMIN table and FACULTY table, how could a faculty (a Database user) edit his or 
-							her profile in FACULTY table?<br>
-					Note6: Assume we have ADMIN table and FACULTY table separately, how could we obtain current user's ID and 
-							hold it into a SESSION variable? Be specific, If the same person is both a administrator and 
-							faculty, this person's data is duplicated in ADMIN table and FACULTY table. This is not a 
-							problem. When this person is logged in, we can hold his or her identity from ADMIN.Email and 
-							store this value into SESSION. But, how could we pull out all the projects belong to him or her? 
-							Since in FACULTY table, this person's identity is using an auto-incremented key. Besides, we can 
-							make the Email attribute in FACULTY as PK. But, a database user may change this FACULTY.Email 
-							value later on. In other words, there is a chance that ADMIN.Email and FACULTY.Email would not 
-							be equal all the time.<br>
-				</div>
+		</div>
+		-->
+		<div class="form-group">
+			<div class="col-sm-offset-1 col-xs-6 col-md-4">
+				<br/>
+				<!-- use input instead button -->
+				<input type="submit" class='btn btn-primary' name="formSubmit" value="Create Faculty User" />
+				<!--  
+				<button type="submit" class="btn btn-primary" name="formSubmit">
+					Create Database User
+				</button>
+				-->
 			</div>
-			<div class="form-group">
-				<div class="col-sm-offset-1 col-sm-10">
-					<br/>
-					<!-- use input instead button -->
-					<input type="submit" class='btn btn-primary' name="formSubmit" value="Create Faculty/Staff User" />
-					<!--  
-					<button type="submit" class="btn btn-primary" name="formSubmit">
-						Create Database User
-					</button>
-					-->
-				</div>
-			</div>
-	</form>
-    </div>
+		</div>
+		</div>
+</form>
+</div>
+EOT;
 
-<?php
-	include_once('./php/footer.php');
+include_once('./php/footer.php');
 ?>

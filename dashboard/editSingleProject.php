@@ -50,7 +50,8 @@
 			
 			$request = mysql_query("UPDATE A_MANAGEMENT
 									SET FacultyID = ".$faculty_id.",
-									ManageStartDate = '$facultyStartDate'
+									ManageStartDate = '$facultyStartDate',
+									Responsibility = 'PI'	
 									WHERE ProjectID = ".$_GET['projectID'].";", $conn) or die(mysql_error());
 									
 			$success = true;
@@ -96,6 +97,10 @@
 								
 		$name_result = mysql_fetch_array($request);
 		$firstLastName = $name_result['FirstName']." ".$name_result['LastName'];
+		if($firstLastName === " ")
+		{
+			$firstLastName = "";
+		}
 	}
 
 	
@@ -104,81 +109,75 @@
 	      <h1 class="page-header">Edit a Current Project</h1>
 	    </div>
 
+
+EOT;
+if($message_out!=="")
+{
+	echo <<<EOT
+			<div class="row">
+			
+				    <div class="col-sm-6 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				    	<div class="row bg-danger">
+	 		<center><br/>$message_out<br/><br/></center>
+	 	</div>
+	 	</div>
+EOT;
+}
+echo <<<EOT
 	<div class="container-fluid">
-		<div class="row">
-			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-				    {$message_out}
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 			<form action="editSingleProject.php?projectID={$_GET['projectID']}" class="form-horizontal" role="form" method="post">
 				<div class="form-group">
-					<label for="projecttitle" class="col-sm-1 control-label">Title:</label>
-					<div class="col-sm-4">
+					<label for="projecttitle" class="col-sm-2 control-label">Title:</label>
+					<div class="col-sm-6">
 						<input value="{$projectTitle}" type="text" class="form-control" id="projecttitle" placeholder="Project Title" name="projecttitle">
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="projecttitle" class="col-sm-1 control-label">Abstract:</label>
-					<div class="col-sm-4">
+					<label for="projecttitle" class="col-sm-2 control-label">Abstract:</label>
+					<div class="col-sm-6">
 						<textarea rows="6" class="form-control" id="projectAbstrct" placeholder="Project Abstract" name="projectAbstract">{$projectAbstract}</textarea>
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="description" class="col-sm-1 control-label">Description:</label>
-					<div class="col-sm-4">
+					<label for="description" class="col-sm-2 control-label">Description:</label>
+					<div class="col-sm-6">
 						<textarea rows="6" class="form-control" id="description" placeholder="Project Description" name="description">{$projectDescription}</textarea>
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="startdate" class="col-sm-1 control-label">Project Start Date:</label>
-					<div class="col-sm-4">
+					<label for="startdate" class="col-sm-2 control-label">Project Start Date:</label>
+					<div class="col-sm-6">
 						<input value="{$projectStartDate}" type="text" class="form-control" id="startdate" placeholder="Project Start Date" name="startdate">
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="enddate" class="col-sm-1 control-label">Project End Date:</label>
-					<div class="col-sm-4">
+					<label for="enddate" class="col-sm-2 control-label">Project End Date:</label>
+					<div class="col-sm-6">
 						<input value="{$projectEndDate}" type="text" class="form-control" id="enddate" placeholder="Project End Date" name="enddate">
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="projectInspector" class="col-sm-1 control-label">Project Inspector:</label>
-					<div class="col-sm-4">
-						<input value="{$firstLastName}" type="text" class="form-control" id="projectInspector" placeholder="Project Inspector" name="projectInspector">
+					<label for="projectInspector" class="col-sm-2 control-label">Project Investigator:</label>
+					<div class="col-sm-6">
+						<input onkeyup="showHint(this.value)" list="txtHint" value="{$firstLastName}" type="text" class="form-control" id="projectInspector" placeholder="Project Investigator" name="projectInspector">
+						<datalist id="txtHint"></datalist>
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="projectInspectorStartDate" class="col-sm-1 control-label">project Inspector Start Date:</label>
-					<div class="col-sm-4">
-						<input value="{$faculty_start_date}" type="text" class="form-control" id="projectInspectorStartDate" placeholder="project Inspector Start Date" name="facultystartdate">
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="control-group">
-					<label for="projectCoInspector" class="col-sm-1 control-label">Project Co-Inspector:</label>
-					<div class="col-sm-4">
-						<input value="NULL" type="text" value="NULL" class="form-control" id="projectCoInspector" placeholder="Project Co-Inspector" name="projectCoInspector">
-					</div>
-					</div>
-				</div>
-				<!--div class="form-group">
-					<div class="col-sm-offset-1 col-sm-4">
-				<input type='button' class='btn btn-primary' value='Add Co-PI' id='addButton' />
-	    			<input type='button' class='btn btn-primary' value='Remove Co-PI' id='removeButton' />
-					</div>
-				</div>
-				<div class="form-group"><br/>
-					<div class="col-sm-offset-1 col-sm-4">
-						Note:  Once a project has been created, you can assign team members, upload files, and make changes to the above fields again.<br>
-						Issue1: Co-Inspector layout.<br>
-						Issue2: Co-Inspector have to have a date for his or her co-inspection on this project.<br>
-						Note: we may want to redesign the co-inspector stuff; get those out and follow the below scenario.<br>
-						Note: In the perspective of this functionality, I am thinking we can add the default PI only, then add other participatants seperately.<br>
-						Note: for the same person, he or she can join a project as a normal reseacher or as a PI or as a Co-PI. <br>
-						On the other hands, a person can grant one or more as a normal reseacher or as a PI or as a Co-PI.<br>
+					<label for="projectInspectorStartDate" class="col-sm-2 control-label">Project Investigator Start Date:</label>
+					<div class="col-sm-6">
+						<input value="{$faculty_start_date}" type="text" class="form-control" id="projectInspectorStartDate" placeholder="Project Inspector Start Date" name="facultystartdate">
 						
 					</div>
-				</div-->
+				</div>
 				<div class="form-group">
-					<div class="col-sm-offset-1 col-sm-10">
+					<div class="col-sm-6">
+						<input onclick="window.location='editAssociatedCOPI.php?projectID={$_GET['projectID']}'"type='button' class='btn btn-primary' value='Manage CO-PIs' id='addButton' />
+					</div>
+				</div>				
+				<div class="form-group">
+					<div class="col-sm-6">
 						<br/>
 						<button action="editSingleProject.php" type="submit" class="btn btn-primary">
 							Save Changes

@@ -44,8 +44,8 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#" onclick="loadPage('profile');">Profile</a></li>
-            <li><a href="#" onclick="loadPage('help');">Help</a></li>
+            <li><a href="profile.php">Profile</a></li>
+            <li><a href="help.php">Help</a></li>
             <li><a href="php/logout.php">Logout</a></li>
           	<li><img src="../assets/ico/iu_ico.png" style="padding-right: 20px; padding-left: 15px;"></img></li>
           </ul>
@@ -66,10 +66,10 @@
 			if($_SESSION['ACCESS_LEVEL'] == 'SUPER_ADMIN')
 			{
 				echo <<<EOT
-				    <li><a href="#" onclick="loadPage('create-user');">Create Faculty/Staff User</a></li>
-				    <li><a href="#" onclick="loadPage('manage-users');">Manage Faculty/Staff Users</a></li>
-				    <li><a href="#" onclick="loadPage('create-admin');">Create Administrative User</a></li>
-				    <li><a href="#" onclick="loadPage('manage-admins');">Manage Administrative Users</a></li>
+				    <li><a href="createFaculty.php">Create Faculty</a></li>
+				    <li><a href="manageFaculty.php">Manage Faculty</a></li>
+				    <li><a href="createAdminUser.php">Create Admin</a></li>
+				    <li><a href="manageAdmins.php">Manage Admins</a></li>
 EOT;
 			}
 		} else {
@@ -80,8 +80,8 @@ EOT;
 	?>
     <!--li><a href="#">Create Faculty</a></li>
     <li><a href="#">Manage Faculty</a></li-->
-    <li><a href="#" onclick="loadPage('create-project');">Create Project</a></li>
-    <li><a href="#" onclick="loadPage('manage-projects');">Manage Projects</a></li>
+    <li><a href="createProject.php">Create Project</a></li>
+    <li><a href="manageProjects.php">Manage Projects</a></li>
 </div>
 <div id='ajax-page-content'>
 <!-- // -->

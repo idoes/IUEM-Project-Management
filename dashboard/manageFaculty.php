@@ -1,7 +1,6 @@
 <?php
-	include_once('./php/header.php');
 	require_once("dbconnect.php");
-	
+	include_once('php/header.php');
 	//TODO
 	/*************************************************************
 	 * DB activity - Check SESSION vaiable against DB.ADMIN
@@ -70,9 +69,8 @@
 	$fp = fopen("xml/Table-Solo-Faculty.xml","wb");
 	fwrite($fp, $xml->asXML());
 	fclose($fp);
-?>
 
-
+echo <<<EOT
 <!--********************************************************************
 		* HTML part 
 	***********************************************************************-->
@@ -85,22 +83,24 @@
 	<div class="row">	        
 		<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 			<div class="table-responsive">
-				<table class="table">
-					<tr>
-						<th>#</th>
-						<th>First Name</th>
-						<th>Last Name</th>
-						<th>Middle Name</th>
-						<th>User Name</th>
-						<th>User Password</th>
-						<th>Activation Code</th>
-						<th>Activated</th>
-						<th>First Access Date</th>
-						<th>Last Access Date</th>
-						<th>Edit</th>
-					</tr>
-					<?php
-						
+				<table class="table AAA table-bordered">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>First Name</th>
+							<th>Last Name</th>
+							<th>Middle Name</th>
+							<th>User Name</th>
+							<th>User Password</th>
+							<th>Activate</th>
+							<th>Is Active</th>
+							<th>First Access Date</th>
+							<th>Last Access Date</th>
+							<th>Edit</th>
+						</tr>
+						</thead>
+						<tbody>
+EOT;
 						//TODO
 						//Add for loop to go through user DB and print out tr/td info
 						$facultyRecord = simplexml_load_file('xml/Table-Solo-Faculty.xml');
@@ -113,30 +113,26 @@
 							$get = $_GET;
 							$get['facultyXMLID'] = $i;
 							$theQueryString = http_build_query($get);
+							$id = $i+1;
 							print <<<HERE
 							<tr>
-								<td>$index->FacultyID</td>
+								<td>$id</td>
 								<td>$index->FirstName</td>
 								<td>$index->LastName</td>
 								<td>$index->MiddleName</td>
 								<td>$index->UserName</td>
 								<td>$index->UserPassword</td>
-								<td>$index->ActivationCode</td>
+								<td><button type="button" class="btn btn-primary btn-xs" onclick="window.location='validate.php?theQueryString={$index->ActivationCode}'">Verify</td>
 								<td>$index->IsActive</td>
 								<td>$index->FirstAccessDate</td>
 								<td>$index->LastAccessDate</td>
-								<td><a href="editSingleFaculty.php?$theQueryString">Edit</a></td>
+								<td><button type="button" class="btn btn-primary btn-xs" onclick="window.location='editSingleFaculty.php?$theQueryString'">Edit</td></td>
 							</tr>
 HERE;
-							//test
-							echo "<br>" .$i;
-						}//end foreach ($adminRecord as $index)
-					?>
-				</table>
-			</div>
-		</div>
-	</div>
-</div>
-<?php
-	include_once('./php/footer.php');
+						
+						}
+	echo "</tbody></table></div></div></div></div>";
+						
+	include_once('php/footer.php');
+						
 ?>

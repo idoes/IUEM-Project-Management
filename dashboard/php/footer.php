@@ -8,5 +8,6 @@
     <script src="../dashboard/js/script.js"></script>
     <script src="../dashboard/js/coProjectInspector.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <script src="../dashboard/js/jquery.dataTables.min.js"></script>
   </body>
 </html>
