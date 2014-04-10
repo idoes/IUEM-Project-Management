@@ -86,8 +86,10 @@
 
 				if(strpos($coPINames[$i]," ") !== false)
 				{
-					$firstName = explode(" ",$coPINames[$i])[0];
-					$lastName = explode(" ",$coPINames[$i])[1];
+					$firstName = explode(" ",$coPINames[$i]);
+					$firstName = $firstName[0];
+					$lastName = explode(" ",$coPINames[$i]);
+					$lastName = $lastName[1];
 				} else {
 					$interactive_message.="Please only enter CO-PI as 'FirstName LastName' in the textbox!  CO-PI ".$i." will not be added (Don't worry, you may always add them later in edit projects tab)";
 					$firstName = "INVALID";$lastName = "INVALID";

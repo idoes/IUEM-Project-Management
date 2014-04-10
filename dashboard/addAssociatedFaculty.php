@@ -2,8 +2,10 @@
 	include_once('dbconnect.php');
 	include_once('./php/header.php');
 
-	$first_name = explode(" ",$_GET['facultyName'])[0];
-	$last_name = explode(" ",$_GET['facultyName'])[1];
+	$first_name = explode(" ",$_GET['facultyName']);
+	$first_name = $first_name[0];
+	$last_name = explode(" ",$_GET['facultyName']);
+	$last_name = $last_name[1];
 
 	$projectID = $_GET['projectID'];
 
