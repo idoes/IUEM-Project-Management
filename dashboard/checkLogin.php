@@ -23,6 +23,7 @@
 									FROM A_FACULTY
 									WHERE UserName = '".$email."'
 									AND UserPassword = '".$password."'
+									AND IsActive = 'YES'
 									LIMIT 1;", $conn) or die(mysql_error());
 									
 			//$result = mysql_query(" CALL SP_CCC('".$email."','".$password."')", $conn) or die(mysql_error());
@@ -35,6 +36,20 @@
 				$_SESSION['EMAIL'] = $result['Email'];		
 				$_SESSION['FULL_NAME'] = $result['FirstName']." ".$result['LastName'];
 				$_SESSION['ACCESS_LEVEL'] = "FACULTY";
+				
+				$checkFirst = mysql_query("SELECT FirstAccessDate FROM `A_FACULTY` WHERE FacultyID = ".$_SESSION['UID'].";", $conn) or die(mysql_error());
+				$checkFirst = mysql_fetch_assoc($checkFirst);
+				$checkFirst = $checkFirst['FirstAccessDate'];
+								
+				if($checkFirst === "0000-00-00 00:00:00")
+				{
+					//update firstAccees/lastaccess
+					$updateTimestamp = mysql_query("UPDATE `A_FACULTY` SET FirstAccessDate = NOW() WHERE FacultyID = ".$_SESSION['UID'].";") or die(mysql_error());
+				} else {
+					//update Lastaccessonly
+					$updateTimestamp = mysql_query("UPDATE `A_FACULTY` SET LastAccessDate = NOW() WHERE FacultyID = ".$_SESSION['UID'].";") or die(mysql_error());
+				}
+				
 				header("Location: dashboard.php");
 			}
 			else 
@@ -48,6 +63,7 @@
 									FROM A_ADMIN
 									WHERE Email = '".$email."'
 									AND Password = '".$password."'
+									AND IsActive = 'YES'
 									LIMIT 1;", $conn) or die(mysql_error());
 									
 			//$result = mysql_query(" CALL SP_DDD('".$email."','".$password."')", $conn) or die(mysql_error());						
@@ -60,6 +76,20 @@
 				$_SESSION['EMAIL'] = $result['Email'];		
 				$_SESSION['FULL_NAME'] = $result['FirstName']." ".$result['LastName'];
 				$_SESSION['ACCESS_LEVEL'] = "SUPER_ADMIN";
+				
+				$checkFirst = mysql_query("SELECT FirstAccessDate FROM `A_ADMIN` WHERE AdminID = ".$_SESSION['UID'].";", $conn) or die(mysql_error());
+				$checkFirst = mysql_fetch_assoc($checkFirst);
+				$checkFirst = $checkFirst['FirstAccessDate'];
+								
+				if($checkFirst === "0000-00-00 00:00:00")
+				{
+					//update firstAccees/lastaccess
+					$updateTimestamp = mysql_query("UPDATE `A_ADMIN` SET FirstAccessDate = NOW() WHERE AdminID = ".$_SESSION['UID'].";") or die(mysql_error());
+				} else {
+					//update Lastaccessonly
+					$updateTimestamp = mysql_query("UPDATE `A_ADMIN` SET LastAccessDate = NOW() WHERE AdminID = ".$_SESSION['UID'].";") or die(mysql_error());
+				}
+				
 				header("Location: dashboard.php");
 			}
 			else 

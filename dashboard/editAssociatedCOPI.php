@@ -4,7 +4,7 @@ include_once ('./php/header.php');
 $projectID = $_GET['projectID'];
 
 //get current faculty associated with this project
-$result = mysql_query("SELECT FacultyID,ManageStartDate  FROM `A_MANAGEMENT` WHERE ProjectID = '$projectID';", $conn) or die(mysql_error());
+$result = mysql_query("SELECT FacultyID,ManageStartDate  FROM `A_MANAGEMENT` WHERE ProjectID = '$projectID' AND Responsibility = 'CO-PI';", $conn) or die(mysql_error());
 
 //if some, display in table
 

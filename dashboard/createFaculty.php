@@ -227,7 +227,8 @@
 												UserName, 
 												UserPassword, 
 												ActivationCode, 
-												IsActive)
+												IsActive,
+												FirstAccessDate)
 											values(
 												null,
 												'$firstName',
@@ -236,7 +237,8 @@
 												'$email',
 												'$password',
 												'$activationCode',
-												'NO');";
+												'NO',
+												'0000-00-00 00:00:00');";
 				$resultInsertion = mysql_query($sqlFacultyInsertion, $conn) or die(mysql_error());
 				if ($resultInsertion)
 				{

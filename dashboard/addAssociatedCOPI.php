@@ -1,6 +1,6 @@
 <?php
 	include_once('dbconnect.php');
-	include_once('./php/header.php');
+	//include_once('./php/header.php');
 
 	$first_name = explode(" ",$_GET['facultyName']);
 	$first_name = $first_name[0];
@@ -12,7 +12,7 @@
 	$facultyID = mysql_query("SELECT FacultyID from `A_FACULTY` WHERE FirstName='".$first_name."' AND LastName='".$last_name."';", $conn) or die(mysql_error());
 	$facultyID = mysql_fetch_assoc($facultyID);	
 
-	$result = mysql_query("INSERT INTO `A_MANAGEMENT` (FacultyID, ProjectID, ManageStartDate) VALUES (".$facultyID['FacultyID'].", ".$projectID.", CURDATE());", $conn) or die(mysql_error());
+	$result = mysql_query("INSERT INTO `A_MANAGEMENT` (FacultyID, ProjectID, ManageStartDate, Responsibility) VALUES (".$facultyID['FacultyID'].", ".$projectID.", CURDATE(), 'CO-PI');", $conn) or die(mysql_error());
 
 echo <<<EOT
 <div class="container-fluid">

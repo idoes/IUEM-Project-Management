@@ -33,7 +33,7 @@
 	
 		if (($mailer->sendMail($emailAddress, $firstName, $subject, $body)) == true)
 			$interactiveMessage .= "A welcome message has been sent to the address. He or she have futher instrunction 
-									in order to activate his or her account";
+									in order to activate his or her account<br/>";
 		else $interactiveMessage .= "Email not sent. " . $emailAddress.' '. $firstName.' '. $subject.' '. $body;
 	
 		return $code;
@@ -217,7 +217,7 @@
 							null,
 							'$email',
 							'$password',
-							null,
+							'0000-00-00 00:00:00',
 							null,
 							'$firstName',
 							'$lastName',
@@ -228,7 +228,7 @@
 				$result = mysql_query($sql, $conn) or die(mysql_error());
 				if ($result)
 				{
-					$interactiveMessage .= "You information has been inserted into Database successfully.";
+					$interactiveMessage .= "Your information has been inserted into Database successfully.";
 				}
 				else 
 				{
@@ -266,7 +266,7 @@ if ($interactiveMessage != "")
 			{
 				print "<div class=\"col-sm-6 col-sm-offset-3 col-md-10 col-md-offset-2 main\">
 	<div class=\"row bg-danger\">
-	 		<center><br/>".$interactiveMessage."</center>
+	 		<center><br/>".$interactiveMessage."<br/></center>
 	 	</div>
 	    </div>";
 			}
