@@ -317,8 +317,8 @@
 	<div class="form-group">
 		<label for="isactivated" class="col-sm-2 control-label">Activated:</label>
 		<div class="col-sm-6">
-			<input type="text" class="form-control" id="isactivated" placeholder="" name="isactivated"
-				value="<?php echo $isActivated; ?>">
+				<input type="radio" name="isactivated" value="YES" <?php if($isActivated == "YES"){echo 'checked';}?>>YES&nbsp;
+				<input type="radio" name="isactivated" value="NO" <?php if($isActivated == "NO"){echo 'checked';}?>>NO
 		</div>
 	</div>
 	<div class="form-group">

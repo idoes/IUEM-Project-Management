@@ -85,7 +85,7 @@
 		$bioText			= trim($_POST['biotext']);
 		$bioPhotoLink		= trim($_POST['biophotolink']);
 		$cvFileLink			= trim($_POST['cvfilelink']);
-		$activationCode		= trim($_POST['activationcode']);
+		//$activationCode		= trim($_POST['activationcode']);
 		$isActivated		= trim($_POST['isactivated']);
 		
 		
@@ -315,14 +315,14 @@
 		<label for="firstaccessdate" class="col-sm-2 control-label">First Access Date:</label>
 		<div class="col-sm-6">
 			<input type="text" class="form-control" id="firstaccessdate" placeholder="" name="firstaccessdate"
-				value="<?php echo $firstAccessDate; ?>" >
+				value="<?php echo $firstAccessDate; ?>" disabled>
 		</div>
 	</div>
 	<div class="form-group">
 		<label for="lastaccessdate" class="col-sm-2 control-label">Last Access Date:</label>
 		<div class="col-sm-6">
 			<input type="text" class="form-control" id="lastaccessdate" placeholder="" name="lastaccessdate"
-				value="<?php echo $lastAccessDate; ?>">
+				value="<?php echo $lastAccessDate; ?>" disabled>
 		</div>
 	</div>
 	<div class="form-group">
@@ -395,18 +395,12 @@
 				value="<?php echo $cvFileLink; ?>">
 		</div>
 	</div>
-	<div class="form-group">
-		<label for="activationcode" class="col-sm-2 control-label">Activation Code:</label>
-		<div class="col-sm-6">
-			<input type="text" class="form-control" id="activationcode" placeholder="" name="activationcode"
-				value="<?php echo $activationCode; ?>">
-		</div>
-	</div>
+
 	<div class="form-group">
 		<label for="isactivated" class="col-sm-2 control-label">Activated:</label>
 		<div class="col-sm-6">
-			<input type="text" class="form-control" id="isactivated" placeholder="" name="isactivated"
-				value="<?php echo $isActivated; ?>">
+			<input type="radio" name="isactivated" value="YES" <?php if($isActivated == "YES"){echo 'checked';}?>>YES&nbsp;
+			<input type="radio" name="isactivated" value="NO" <?php if($isActivated == "NO"){echo 'checked';}?>>NO
 		</div>
 	</div>
 	<div class="form-group">
