@@ -139,86 +139,19 @@
 		if ($firstNameIsOk && $lastNameIsOk && $passwordIsOk && $emailIsOk)
 		{
 			//Database activities - check Whether the Record has already occur
-			$sqlCountFaculty = "SELECT COUNT(*) AS COUNTER FROM A_FACULTY WHERE Email = '" . $email. "';";
+			$sqlCountFaculty = "SELECT COUNT(*) AS COUNTER FROM A_FACULTY WHERE UserName = '" . $email. "';";
 			$resultSqlCountFaculty = mysql_query($sqlCountFaculty, $conn) or die(mysql_error());
 			$theObject = mysql_fetch_object($resultSqlCountFaculty);
 			$count = $theObject -> COUNTER;
-			
-			//test
-			//print "<br>Email Record occur as counter: $count <br>";
-			
-			//the Record has already occur
 			if ($count != 0)
 			{
-				//to check IsActivated
-				$sqlIsActive = "SELECT IsActive AS IS_ACTIVE FROM A_FACULTY WHERE UserName = '" . $email. "';";
-				$resultIsActive = mysql_query($sqlIsActive, $conn) or die(mysql_error());
-				$returnObject= mysql_fetch_object($resultIsActive);
-				$isActive = $returnObject -> IS_ACTIVE;
-				
-				//test
-				print "is Active: $isActive<br>";
-				
-				//to check Whether it is an activated account
-				if($isActive === "NO")
-				{
-					//generate new activation code || resend Email
-					$activationCode2 = sendEmail($email, $firstName, $email, $password);
-					
-					//test
-					print "ActivationCode2: $activationCode2<br>";
-					
-					//Upgrade ADIMN.ActivationCode
-					$sqlUpgradeACode = "UPDATE A_FACULTY
-										SET ActivationCode = '$activationCode2',
-										UserPassword = '$password'
-										WHERE UserName = '$email';";
-					$resultUpdate = mysql_query($sqlUpgradeACode, $conn) or die(mysql_error());
-					if ($resultUpdate)
-					{
-						$interactiveMessage .= "<br>The new password value and activation code haven been reset.<br>";
-					}
-					else
-					{
-						$interactiveMessage .= "<br>there has some problems during record updating; please re-insert admin. record again.<br>";
-					}
-	
-				}//END if($isActive === "NO")
-				else 
-				{
-					$interactiveMessage = $interactiveMessage . "<br>The created user has record in Database and has been activated by himself or herself.";
-				}//END ELSE($isActive === "NO")
-
+				$interactiveMessage.="<br/>This user has already been registered as an Admin.";
 			}//END if ($count != 0)
 			else
 			{
 				//send Email
 				$activationCode = sendEmail($email, $firstName, $email, $password);
-				
-				/********************************************************************
-				 * Reference - Datbase Faculty Attribute name
-				***********************************************************************/
-				/*
-				 * FacultyID, 
-					FirstName, 
-					LastName, 
-					MiddleName, 
-					Email, 
-					Title, 
-					Position, 
-					OfficeLocation, 
-					BioText, 
-					BioPhotoLink, 
-					CVFileLink, 
-					UserName, 
-					UserPassword, 
-					ActivationCode, 
-					IsActive, 
-					FirstAccessDate, 
-					LastAccessDate
-				 */	
-						
-				//Database FACULTY Insertion
+
 				$sqlFacultyInsertion = "INSERT INTO A_FACULTY
 											(	FacultyID, 
 												FirstName, 
@@ -250,11 +183,9 @@
 				}
 				
 				
-			}//END ELSE($count != 0)
-			
-			
+				}//END ELSE($count != 0)
+			}			
 		}//END if ($firstNameIsOk && $lastNameIsOk && $passwordIsOk && $emailIsOk)
-	}
 
 echo <<<EOT
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -324,5 +255,5 @@ echo <<<EOT
 </div>
 EOT;
 
-include_once('./php/footer.php');
+	include_once('./php/footer.php');
 ?>

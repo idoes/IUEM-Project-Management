@@ -9,8 +9,8 @@
 		$interactive_message = "";	
 			
 		isset($_POST['projecttitle']) ? $title = mysql_escape_string(trim($_POST['projecttitle'])) : null;
-		isset($_POST['projectAbstract']) ? $abstract = mysql_escape_string(trim($_POST['projectAbstract'])) : null;
-		isset($_POST['description']) ? $description = mysql_escape_string(trim($_POST['description'])) : null;
+		isset($_POST['projectAbstract']) ? $abstract = mysql_escape_string(trim($_POST['projectAbstract'])) : $abstract = "";
+		isset($_POST['description']) ? $description = mysql_escape_string(trim($_POST['description'])) : $description = "";
 		isset($_POST['startdate']) ? $startDate = mysql_escape_string(trim($_POST['startdate'])) : null;
 		isset($_POST['enddate']) ? $endDate = mysql_escape_string(trim($_POST['enddate'])) : null;
 		isset($_POST['projectInspector']) ? $PI_ID = mysql_escape_string(trim($_POST['projectInspector'])) : null;
@@ -18,8 +18,8 @@
 		
 		//check variable
 		(!strlen($title) > 0) ? $interactive_message.="Project title cannot be blank<br/>":null;
-		(!strlen($abstract) > 0) ? $interactive_message.="Project abstract cannot be blank<br/>":null;
-		(!strlen($description) > 0) ? $interactive_message.="Project description cannot be blank<br/>":null;
+		//(!strlen($abstract) > 0) ? $interactive_message.="Project abstract cannot be blank<br/>":null;
+		//(!strlen($description) > 0) ? $interactive_message.="Project description cannot be blank<br/>":null;
 		(!strlen($startDate) > 0) ? $interactive_message.="Project start date cannot be blank<br/>":null;
 		(!strlen($PI_ID) > 0) ? $interactive_message.="Project projectInspector cannot be blank<br/>":null;
 		(!strlen($facultyStartDate) > 0) ? $interactive_message.="Faculty startdate cannot be blank<br/>":null;
@@ -57,7 +57,8 @@
 									SET FacultyID = ".$faculty_id.",
 									ManageStartDate = '$facultyStartDate',
 									Responsibility = 'PI'	
-									WHERE ProjectID = ".$_GET['projectID'].";", $conn) or die(mysql_error());
+									WHERE ProjectID = ".$_GET['projectID']."
+									AND Responsibility = 'PI';", $conn) or die(mysql_error());
 									
 			$success = true;
 									

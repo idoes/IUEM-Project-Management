@@ -27,13 +27,14 @@ EOT;
 	//Add for loop to go through project DB and print out tr/td info
 	if($_SESSION['ACCESS_LEVEL'] === "FACULTY") {
 		$result = mysql_query(" SELECT ProjectID FROM A_RESEARCH WHERE FacultyID = ".$_SESSION['UID'], $conn) or die(mysql_error());
-		
+		$has_found = false;
 		$projects_part_of = array();
 		$num_projects_part_of = mysql_num_rows($result);
 		$i=0;
 		while($row = mysql_fetch_assoc($result)){
 			$projects_part_of[$i] = $row['ProjectID'];
 			$i++;
+			$has_found = true;
 		}
 		
 		$result = mysql_query(" SELECT ProjectID FROM A_MANAGEMENT WHERE FacultyID = ".$_SESSION['UID'], $conn) or die(mysql_error());
@@ -43,6 +44,7 @@ EOT;
 		while($row = mysql_fetch_assoc($result)){
 			$projects_part_of[$i] = $row['ProjectID'];
 			$i++;
+			$has_found = true;
 		}
 		
 		$sql = " SELECT * FROM A_PROJECT WHERE";
@@ -56,7 +58,7 @@ EOT;
 			}
 		}
 		
-		$result = mysql_query($sql, $conn) or die(mysql_error());
+		if($has_found) {$result = mysql_query($sql, $conn) or die(mysql_error()); }
 		
 	} else {
 		$result = mysql_query(" SELECT *

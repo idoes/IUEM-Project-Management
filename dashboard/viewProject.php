@@ -142,7 +142,7 @@
 	if($num_files == 0)
 	{
 		//if no files, do this
-		echo "No files have been uploaded to this project!<br/>";
+		//echo "No files have been uploaded to this project!<br/>";
 	} else {
 		//else, do this
 		for($i = 0; $i < $num_files; $i++)

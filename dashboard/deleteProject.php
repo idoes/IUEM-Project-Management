@@ -6,6 +6,7 @@
 	
 	$result = mysql_query("DELETE FROM `A_RESEARCH` WHERE ProjectID = ".$projectID.";", $conn) or die(mysql_error());
 	$result = mysql_query("DELETE FROM `A_MANAGEMENT` WHERE ProjectID = ".$projectID.";", $conn) or die(mysql_error());
+	$result = mysql_query("DELETE FROM `A_ATTACHMENT` WHERE ProjectID = ".$projectID.";", $conn) or die(mysql_error());
 	$result = mysql_query("DELETE FROM `A_PROJECT` WHERE ProjectID = ".$projectID.";;", $conn) or die(mysql_error());
 
 	echo <<<EOT
