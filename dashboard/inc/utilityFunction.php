@@ -1,6 +1,6 @@
 <?php 
-
-
+	include_once("./mail/mail.class.php");
+	
 /*This function prevents malicious users enter multiple email addresses into the email box
  *It makes sure that only one email is entered into the email box.
  *
@@ -191,7 +191,13 @@ function toChar($digit)
 	return $char;
 }
 
-
-
-
+	function sendEmailPassword($emailAddress, $firstName, $userName, $password)
+	{
+		$subject = "Password Reset";
+		$body = '<br>Your UserName is '.$userName.
+		'<br>Your Password is '.$password;
+		$mailer = new Mail();
+	
+		$mailer->sendMail($emailAddress, $firstName, $subject, $body);
+	}
 ?>

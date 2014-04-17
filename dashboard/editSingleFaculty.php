@@ -65,6 +65,7 @@
 	***********************************************************************/
 	if($_SERVER['REQUEST_METHOD'] === 'POST')
 	{
+		$facultyID = $_GET['facultyID'];	
 		//test
 		//echo "<br>This is After Submit";
 		
@@ -207,7 +208,7 @@
 					UserPassword 	= '$userPassword',
 					ActivationCode 	= '$activationCode',
 					IsActive 		= '$isActivated'
-				WHERE UserName = '$userName';";
+				WHERE FacultyID = ".$facultyID.";";
 				$resultUpdateFaculty = mysql_query($sqlUpgradeFaculty, $conn) or die(mysql_error());
 				if($resultUpdateFaculty)
 				{
@@ -279,7 +280,7 @@
 </div>
     
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-<form id="post_form" action="editSingleFaculty.php" class="form-horizontal" role="form" method="post">
+<form id="post_form" action="editSingleFaculty.php?facultyID=<?php echo $facultyID;?>" class="form-horizontal" role="form" method="post">
 	<!-- screen out interative message which is deliverd from server. -->
 	<?php 
 	//screen out the issues at the top of page

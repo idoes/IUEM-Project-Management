@@ -32,7 +32,10 @@
 						  <tr>
 						  <td><b>Middle Name:</b></td>
 						  <td>".$result['MiddleName']."</td>
-						 </tr>";
+						 </tr>
+						 <tr>
+						 <td>
+						 <input type='button' class='btn btn-primary btn-xs' onclick=\"window.location='editSingleAdmin.php?adminID=".$_SESSION['UID']."'\" value='Edit My Information'></td><td></td></tr>";;
 		
 	} else if($_SESSION['ACCESS_LEVEL'] === 'FACULTY') {
 		$result = mysql_query(" SELECT *
@@ -59,11 +62,9 @@
 						  <td><b>First Access Date:</b></td>
 						  <td>".$result['FirstAccessDate']."</td>
 						  </tr>
-						  <!--tr>
-						  <td><b></b></td>
-						  <!--TODO: Add here implementation for lastaccessdate update it on login-->
-						  <td></td>
-						 </tr-->";
+						  <tr>
+						  <td>
+						  <input type='button' class='btn btn-primary btn-xs' onclick=\"window.location='editSingleFaculty.php?facultyID=".$_SESSION['UID']."'\" value='Edit My Information'></td><td></td></tr>";
 	}
 	
 echo <<<EOT
@@ -72,7 +73,7 @@ echo <<<EOT
 </div>
 
 <div class="col-sm-9 col-sm-offset-3 col-md-5 col-md-offset-2 main">
-	<table class="table">
+	<table class="table table-bordered">
   		{$table_content}
 	</table>
 	<!-- The following need to be delete after PHP implementation. -->
