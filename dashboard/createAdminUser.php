@@ -45,14 +45,14 @@
 	$middleName 		= "";
 	$email				= "";
 
-	if(isset($_POST['formSubmit']))
+	if($_SERVER['REQUEST_METHOD'] === 'POST')
 	{
 		//take the information submitted and verify inputs
 		//always trim the user input to get rid of the additiona white spaces on both ends of the user input
-		$firstName 	= trim($_POST['firstname']);
-		$lastName	= trim($_POST['lastname']);
-		$middleName = trim($_POST['middlename']);
-		$email		= trim($_POST['email']);
+		$firstName 	= mysql_escape_string(trim($_POST['firstname']));
+		$lastName	= mysql_escape_string(trim($_POST['lastname']));
+		$middleName = mysql_escape_string(trim($_POST['middlename']));
+		$email		= mysql_escape_string(trim($_POST['email']));
 		
 		$firstNameIsOk 	= false;
 		$lastNameIsOk	= false;
@@ -135,7 +135,7 @@
 		//$email				= mysql_real_escape_string($email);
 		
 		
-		$interactiveMessage.="<br/><br/>";
+		//$interactiveMessage.="<br/><br/>";
 
 		// Checking passed
 		if ($firstNameIsOk && $lastNameIsOk && $passwordIsOk && $emailIsOk) 
@@ -154,7 +154,7 @@
 			$field = mysql_fetch_object($result);
 			$count = $field -> COUNTER;
 			//test
-			print "Email Record occur as counter: $count <br>";
+			//print "Email Record occur as counter: $count <br>";
 			
 			
 			
@@ -165,40 +165,42 @@
 			if ($count != 0)
 			{
 				//to check IsActive or not
-				$sqlIsActive = "SELECT IsActive AS IS_ACTIVE FROM A_ADMIN WHERE Email = '" . $email. "';";
-				$resultIsActive = mysql_query($sqlIsActive, $conn) or die(mysql_error());
-				$returnObject= mysql_fetch_object($resultIsActive);
-				$isActive = $returnObject -> IS_ACTIVE;
-				//test
-				print "is Active: $isActive<br>";
+				// $sqlIsActive = "SELECT IsActive AS IS_ACTIVE FROM A_ADMIN WHERE Email = '" . $email. "';";
+				// $resultIsActive = mysql_query($sqlIsActive, $conn) or die(mysql_error());
+				// $returnObject= mysql_fetch_object($resultIsActive);
+				// $isActive = $returnObject -> IS_ACTIVE;
+				// //test
+				// //print "is Active: $isActive<br>";
+// 				
+				// if($isActive === "NO")
+				// {
+					// //generate new activation code
+					// //send emial with actication code again
+					// //send Email
+					// $activationCode2 = sendEmail($email, $firstName, $email, $password);
+					// //test
+					// //print "ActivationCode2: $activationCode2<br>";
+					// //Upgrade ADIMN.ActivationCode
+					// $sqlUpgradeACode = "UPDATE A_ADMIN
+										// SET ActivationCode = '$activationCode2',
+											// Password = '$password' 
+										// WHERE Email = '$email';";
+					// $resultUpdate = mysql_query($sqlUpgradeACode, $conn) or die(mysql_error());
+					// if ($resultUpdate)
+					// {
+						// $interactiveMessage .= "The new password value and activation code haven been reset.<br>";
+					// }
+					// else
+					// {
+						// $interactiveMessage .= "there has some problems during record updating; please re-insert admin. record again.<br>";
+					// }
+				// }
+				// else 
+				// {
+					// $interactiveMessage = $interactiveMessage . "The created user has record in Database and has been activated by himself or herself.";
+				// }
 				
-				if($isActive === "NO")
-				{
-					//generate new activation code
-					//send emial with actication code again
-					//send Email
-					$activationCode2 = sendEmail($email, $firstName, $email, $password);
-					//test
-					print "ActivationCode2: $activationCode2<br>";
-					//Upgrade ADIMN.ActivationCode
-					$sqlUpgradeACode = "UPDATE A_ADMIN
-										SET ActivationCode = '$activationCode2',
-											Password = '$password' 
-										WHERE Email = '$email';";
-					$resultUpdate = mysql_query($sqlUpgradeACode, $conn) or die(mysql_error());
-					if ($resultUpdate)
-					{
-						$interactiveMessage .= "The new password value and activation code haven been reset.<br>";
-					}
-					else
-					{
-						$interactiveMessage .= "there has some problems during record updating; please re-insert admin. record again.<br>";
-					}
-				}
-				else 
-				{
-					$interactiveMessage = $interactiveMessage . "The created user has record in Database and has been activated by himself or herself.";
-				}
+				$interactiveMessage.="This email has already been registered as an admin.<br/>";
 
 			}//end if ($count != 0)
 			/*************************************************************
@@ -213,6 +215,8 @@
 				//hash the password
 				//$password = sha1($password);
 			
+				
+			
 				$sql = "INSERT INTO A_ADMIN values(
 							null,
 							'$email',
@@ -224,6 +228,7 @@
 							'$middleName',
 							'$activationCode',
 							'NO');";
+							
 				//send the query to the database or quit if cannot connect || hold the result set
 				$result = mysql_query($sql, $conn) or die(mysql_error());
 				if ($result)
@@ -274,14 +279,15 @@ if ($interactiveMessage != "")
 echo <<<EOT
     
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-	<form action="createAdminUser.php" class="form-horizontal" role="form" method="post">
+	<form id="post_form" action="createAdminUser.php" class="form-horizontal" role="form" method="post">
+	
 EOT;
 			
 echo <<<EOT
-			<div class="form-group">
+			<div class="form-group has-warning">
 				<label for="firstname" class="col-sm-2 control-label">First Name:</label>
 				<div class="col-sm-6">
-					<input type="text" class="form-control" id="firstname" placeholder="First Name (Required)" name="firstname">
+					<input type="text" class="form-control" id="firstname" placeholder="First Name" name="firstname">
 				</div>
 			</div>
 			<div class="form-group">
@@ -290,16 +296,16 @@ echo <<<EOT
 					<input type="text" class="form-control" id="middlename" placeholder="Middle Name" name="middlename">
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group has-warning">
 				<label for="lastname" class="col-sm-2 control-label">Last Name:</label>
 				<div class="col-sm-6">
-					<input type="text" class="form-control" id="lastname" placeholder="Last Name (Required)" name="lastname">
+					<input type="text" class="form-control" id="lastname" placeholder="Last Name" name="lastname">
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group has-warning">
 				<label for="email" class="col-sm-2 control-label">Email</label>
 				<div class="col-sm-6">
-					<input autocomplete="off" type="email" class="form-control" id="email" placeholder="Email (Required)" name="email">
+					<input autocomplete="off" type="email" class="form-control" id="email" placeholder="Email" name="email">
 				</div>
 			</div>
 			<div class="form-group">
@@ -319,13 +325,7 @@ echo <<<EOT
 			<div class="form-group">
 				<div class="col-sm-offset-1 col-sm-10">
 					<br/>
-					<!-- use input instead button -->
-					<input type="submit" class='btn btn-primary' name="formSubmit" value="Create Administrator User" />
-					<!--  
-					<button type="submit" class="btn btn-primary" name="formSubmit">
-						Create Database User
-					</button>
-					-->
+						<input type="button" onclick="validateCreateAdminUser();" class='btn btn-primary' name="formSubmit" value="Create Administrator User" />
 				</div>
 			</div>
 	</form>

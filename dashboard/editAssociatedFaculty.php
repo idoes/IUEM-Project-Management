@@ -77,6 +77,7 @@ echo <<<EOT
 		<div class="form-group">
 <br/><br/>
 		<button action="submit" class="btn btn-primary">Add</button>
+		<button type="button" class="btn btn-primary" onclick="window.location='viewProject.php?projectID=$projectID'">Return</button>
 		</div>                        
 </form>
 </div>

@@ -37,8 +37,8 @@
 				
 		//check variable
 		(!strlen($title) > 0) ? $interactive_message.="Project title cannot be blank<br/>":null;
-		(!strlen($abstract) > 0) ? $interactive_message.="Project abstract cannot be blank<br/>":null;
-		(!strlen($description) > 0) ? $interactive_message.="Project description cannot be blank<br/>":null;
+		//(!strlen($abstract) > 0) ? $interactive_message.="Project abstract cannot be blank<br/>":null;
+		//(!strlen($description) > 0) ? $interactive_message.="Project description cannot be blank<br/>":null;
 		(!strlen($startDate) > 0) ? $interactive_message.="Project start date cannot be blank<br/>":null;
 		//(!strlen($endDate) === "") ? $interactive_message.="Project enddate cannot be blank<br/>":null;
 		(!strlen($PI_ID) > 0) ? $interactive_message.="Project projectInspector cannot be blank<br/>":null;
@@ -63,6 +63,7 @@
 									(Title, Abstract, Initialdate, Description, CloseDate)
 									VALUES ('$title','$abstract','$startDate','$description','$endDate');",
 									$conn) or die(mysql_error());
+								
 									
 			$request = mysql_query("SELECT MAX(ProjectID) as theMax
 									FROM A_PROJECT", $conn) or die(mysql_error());
@@ -77,6 +78,11 @@
 									(FacultyID, ProjectID, ManageStartDate, Responsibility)
 									VALUES ($faculty_id, $max, '$facultyStartDate', 'PI')", $conn) or die(mysql_error());
 									
+			$request = mysql_query("INSERT INTO A_RESEARCH
+						(FacultyID, ProjectID, ResearchStartDate)
+						VALUES 
+						(".$_SESSION['UID'].", $max, NOW());", $conn) or die(mysql_error());
+			
 			$success = true;
 			$interactive_message.="Project Created!<br/>"; 
 			

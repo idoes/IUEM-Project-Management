@@ -60,7 +60,7 @@
 	/********************************************************************
 	 * PHP - IF Subimit
 	***********************************************************************/
-	if(isset($_POST['formSubmit']))
+	if($_SERVER['REQUEST_METHOD'] === 'POST')
 	{
 		//flag for all input validation purpose
 		$firstNameIsOk 	= false;
@@ -276,17 +276,17 @@ echo <<<EOT
 
     
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-	<form action="createFaculty.php" class="form-horizontal" role="form" method="post">
+	<form id="post_form" action="createFaculty.php" class="form-horizontal" role="form" method="post">
 			
 EOT;
 			//screen out the issues at the top of page
 			
 echo <<<EOT
 <!--div class="col-sm-9 col-sm-offset-1 col-md-4 col-md-offset-1"-->
-		<div class="form-group">
+		<div class="form-group has-warning">
 			<label for="firstname" class="col-sm-2 control-label">First Name:</label>
 			<div class="col-sm-6">
-				<input type="text" class="form-control" id="firstname" placeholder="First Name (Required)" name="firstname">
+				<input type="text" class="form-control" id="firstname" placeholder="First Name" name="firstname">
 			</div>
 		</div>
 		<div class="form-group">
@@ -295,16 +295,16 @@ echo <<<EOT
 				<input type="text" class="form-control" id="middlename" placeholder="Middle Name" name="middlename">
 			</div>
 		</div>
-		<div class="form-group">
+		<div class="form-group has-warning">
 			<label for="lastname" class="col-sm-2 control-label">Last Name:</label>
 			<div class="col-sm-6">
-				<input type="text" class="form-control" id="lastname" placeholder="Last Name (Required)" name="lastname">
+				<input type="text" class="form-control" id="lastname" placeholder="Last Name" name="lastname">
 			</div>
 		</div>
-		<div class="form-group">
+		<div class="form-group has-warning">
 			<label for="email" class="col-sm-2 control-label">Email</label>
 			<div class="col-sm-6">
-				<input autocomplete="off" type="email" class="form-control" id="email" placeholder="Email (Required)" name="email">
+				<input autocomplete="off" type="email" class="form-control" id="email" placeholder="Email" name="email">
 			</div>
 		</div>
 		<div class="form-group">
@@ -313,24 +313,10 @@ echo <<<EOT
 				<input type="text" class="form-control" id="password" placeholder="{$password}" name="password" disabled>
 			</div>
 		</div>
-		<!-- see note 4  
-		<div class="form-group">
-			<label for="position" class="col-sm-2 control-label">Access Level:</label>
-			<div class="col-sm-5">
-				<input type="text" class="form-control" id="accessLevel" placeholder="Administrator or Faculty Member (Required)" name="accessLevel">
-			</div>
-		</div>
-		-->
 		<div class="form-group">
 			<div class="col-sm-offset-1 col-xs-6 col-md-4">
 				<br/>
-				<!-- use input instead button -->
-				<input type="submit" class='btn btn-primary' name="formSubmit" value="Create Faculty User" />
-				<!--  
-				<button type="submit" class="btn btn-primary" name="formSubmit">
-					Create Database User
-				</button>
-				-->
+				<input type="button" class='btn btn-primary' onclick='validateCreateFaculty();' name="formSubmit" value="Create Faculty User" />
 			</div>
 		</div>
 		</div>

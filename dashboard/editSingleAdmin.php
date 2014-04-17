@@ -12,9 +12,7 @@
 	
 
 	$interactiveMessage = "";
-	$adminXMLID 		= "";
-	
-	$adminID 			= "";
+	$adminID 		= "";
 	$userName			= "";
 	$userPassword		= "";
 	$firstAccessDate	= "";
@@ -29,18 +27,18 @@
 
 ?>
 <?php 
-	if(isset($_POST['formSubmit']))
+	if($_SERVER['REQUEST_METHOD'] === 'POST')
 	{
 		//test
 		//echo "<br>This is After Submit";
-		
-		$userName			= trim($_POST['username']);
-		$userPassword		= trim($_POST['userpassword']);
-		$firstName 			= trim($_POST['firstname']);
-		$lastName			= trim($_POST['lastname']);
-		$middleName 		= trim($_POST['middlename']);
-		$activationCode		= trim($_POST['activationcode']);
-		$isActivated		= trim($_POST['isactivated']);
+		$adminID = $_GET['adminID'];
+		$userName			= mysql_escape_string(trim($_POST['username']));
+		$userPassword		= mysql_escape_string(trim($_POST['userpassword']));
+		$firstName 			= mysql_escape_string(trim($_POST['firstname']));
+		$lastName			= mysql_escape_string(trim($_POST['lastname']));
+		$middleName 		= mysql_escape_string(trim($_POST['middlename']));
+		//$activationCode		= trim($_POST['activationcode']);
+		$isActivated		= mysql_escape_string(trim($_POST['isactivated']));
 		
 		//TODO 
 		/*************************************************************
@@ -115,7 +113,7 @@
 			/*************************************************************
 			 * DB activity - Ensure User name is unique
 			*************************************************************/
-			$sqlCountAdmin = "SELECT COUNT(*) AS COUNTER FROM A_ADMIN WHERE Email = '" . $userName. "';";
+			$sqlCountAdmin = "SELECT COUNT(*) AS COUNTER FROM A_ADMIN WHERE AdminID = ".$_GET['adminID'].";";
 			$result = mysql_query($sqlCountAdmin, $conn) or die(mysql_error());
 			$field = mysql_fetch_object($result);
 			$count = $field -> COUNTER;
@@ -138,9 +136,8 @@
 				FirstName 		= '$firstName',
 				LastName		= '$lastName',
 				MiddleName 		= '$middleName',
-				ActivationCode	= '$activationCode',
 				IsActive		= '$isActivated'
-				WHERE Email = '$userName';";
+				WHERE AdminID = ".$_GET['adminID'];
 				//test
 				//echo "<br>" . $sqlUpgradeAdmin;
 				$resultUpdateAdmin = mysql_query($sqlUpgradeAdmin, $conn) or die(mysql_error());
@@ -148,9 +145,9 @@
 				{
 					$interactiveMessage .= "The correponding record has been updated on Database.<br/>
 		 							You will be directed to the dashboard in 3 seconds.<br/>
-		 							Please do not perform any actions on this page.<br/><br/><br/>";
+		 							Please do not perform any actions on this page.<br/>";
 					//TODO uncomment the following statement
-					header('Refresh: 3; URL=dashboard.php?redirect=manage-admins');
+					header('Refresh: 3; URL=manageAdmins.php');
 				}
 				else
 				{
@@ -168,83 +165,26 @@
 		
 	}//END if(isset($_POST['formSubmit']))
 	
-	if(isset($_GET['AdminXMLID']))
+	if($_SERVER['REQUEST_METHOD'] === 'GET')
 	{
-		/*************************************************************
-		 * fetch adminID by given admin XML ID and parsing XML file
-		*************************************************************/
-		$adminXMLID = $_GET['AdminXMLID'];
+		$adminID = $_GET['adminID'];
+		$result = mysql_query("SELECT * FROM A_ADMIN WHERE AdminID = ".$adminID.";", $conn) or die(mysql_error());
 		
-		//test
-		// echo "<br>This is First time load";
-		// echo "<br>Query String[AdminXMLID]: " . $_GET['AdminXMLID'];
-		// echo "<br>Before assign value from XML";
-		// echo "<br>Input 1: " . $adminXMLID;
-		// echo "<br>Input 2: " . $adminID;
-		// echo "<br>Input 3: " . $userName;
-		// echo "<br>Input 4: " . $userPassword;
-		// echo "<br>Input 5: " . $firstAccessDate;
-		// echo "<br>Input 6: " . $lastAccessDate;
-		// echo "<br>Input 7: " . $firstName;
-		// echo "<br>Input 8: " . $lastName;
-		// echo "<br>Input 9: " . $middleName;
-		// echo "<br>Input 10: " . $activationCode;
-		// echo "<br>Input 11: " . $isActivated;
-		
-		
-
-		$adminRecord = simplexml_load_file('xml/Table-Solo-Admin.xml');
-		for($i = 0; $i < count($adminRecord); $i++)
+		if(mysql_num_rows($result) != 1)
 		{
-			if($i == $adminXMLID)
-			{
-				$adminID = $adminRecord->AdminInstance[$i]->AdminID;
-			}
-		}
-		/*
-		$i = -1;
-		foreach ($adminRecord as $index)
-		{
-			$i ++;
-			if ($index == $adminXMLID)
-			{
-				$adminID = $index->AdminID;
-			}
-		}//END foreach ($adminRecord as $index)
-		*/
-		/*************************************************************
-		 * fetch all values by given admin ID and parsing XML file
-		*************************************************************/
-		foreach ($adminRecord as $index)
-		{
-			if ($index == $adminID)
-			{
-				$userName			= $index->Email;
-				$userPassword		= $index->Password;
-				$firstAccessDate	= $index->FirstAccessDate;
-				$lastAccessDate 	= $index->LastAccessDate;
-				$firstName 			= $index->FirstName;
-				$lastName			= $index->LastName;
-				$middleName 		= $index->MiddleName;
-				$activationCode		= $index->ActivationCode;
-				$isActivated		= $index->IsActive;
-			}
-		}//END foreach ($adminRecord as $index)
+			echo "<div class='col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main'>Fatal Error:  No Admin with ID ".$adminID."!</div>";
+			header("Refresh: 10; URL=manageAdmins.php");
+			die();
+		} else {
+			$row = mysql_fetch_assoc($result);
 			
-		
-		//test
-		// echo "<br>After assign value from XML";
-		// echo "<br>Input 1: " . $adminXMLID;
-		// echo "<br>Input 2: " . $adminID;
-		// echo "<br>Input 3: " . $userName;
-		// echo "<br>Input 4: " . $userPassword;
-		// echo "<br>Input 5: " . $firstAccessDate;
-		// echo "<br>Input 6: " . $lastAccessDate;
-		// echo "<br>Input 7: " . $firstName;
-		// echo "<br>Input 8: " . $lastName;
-		// echo "<br>Input 9: " . $middleName;
-		// echo "<br>Input 10: " . $activationCode;
-		// echo "<br>Input 11: " . $isActivated;
+			$firstName = $row['FirstName'];
+			$lastName = $row['LastName'];
+			$middleName = $row['MiddleName'];
+			$userName = $row['Email'];
+			$userPassword = $row['Password'];
+			$isActivated = $row['IsActive'];
+		}
 	}
 
 
@@ -269,17 +209,17 @@
 	?>
     
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-<form action="editSingleAdmin.php" class="form-horizontal" role="form" method="post">
+<form id="post_form" action="editSingleAdmin.php?adminID=<?php echo $adminID;?>" class="form-horizontal" role="form" method="post">
 	<!-- screen out interative message which is deliverd from server. -->
 
-	<div class="form-group">
+	<div class="form-group has-warning">
 		<label for="firstname" class="col-sm-2 control-label">First Name:</label>
 		<div class="col-sm-6">
 			<input type="text" class="form-control" id="firstname" placeholder="" name="firstname" 
 				value="<?php echo $firstName; ?>">
 		</div>
 	</div>
-	<div class="form-group">
+	<div class="form-group has-warning">
 		<label for="lastname" class="col-sm-2 control-label">Last Name:</label>
 		<div class="col-sm-6">
 			<input type="text" class="form-control" id="lastname" placeholder="" name="lastname"
@@ -293,25 +233,18 @@
 				value="<?php echo $middleName; ?>">
 		</div>
 	</div>
-	<div class="form-group">
+	<div class="form-group has-warning">
 		<label for="username" class="col-sm-2 control-label">User Name:</label>
 		<div class="col-sm-6">
 			<input type="text" class="form-control" id="username" placeholder="" name="username"
 				value="<?php echo $userName; ?>">
 		</div>
 	</div>
-	<div class="form-group">
+	<div class="form-group has-warning">
 		<label for="userpassword" class="col-sm-2 control-label">User Password:</label>
 		<div class="col-sm-6">
 			<input type="text" class="form-control" id="userpassword" placeholder="" name="userpassword"
 				value="<?php echo $userPassword; ?>">
-		</div>
-	</div>
-	<div class="form-group">
-		<label for="activationcode" class="col-sm-2 control-label">Activation Code:</label>
-		<div class="col-sm-6">
-			<input type="text" class="form-control" id="activationcode" placeholder="" name="activationcode"
-				value="<?php echo $activationCode; ?>">
 		</div>
 	</div>
 	<div class="form-group">
@@ -322,24 +255,10 @@
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="firstaccessdate" class="col-sm-2 control-label">First Access Date:</label>
-		<div class="col-sm-6">
-			<input type="text" class="form-control" id="firstaccessdate" placeholder="" name="firstaccessdate"
-				value="<?php echo $firstAccessDate; ?>" disabled>
-		</div>
-	</div>
-	<div class="form-group">
-		<label for="lastaccessdate" class="col-sm-2 control-label">Last Access Date:</label>
-		<div class="col-sm-6">
-			<input type="text" class="form-control" id="lastaccessdate" placeholder="" name="lastaccessdate"
-				value="<?php echo $lastAccessDate; ?>" disabled>
-		</div>
-	</div>
-	<div class="form-group">
 		<div class="col-sm-offset-1 col-sm-10">
 			<br/>
 			<!-- use input instead button -->
-			<input type="submit" class='btn btn-primary' name="formSubmit" value="Update" />
+			<input type="button" onclick="validateEditSingleAdmin();" class='btn btn-primary' name="formSubmit" value="Update" />
 			<!--  
 			<button type="submit" class="btn btn-primary" name="formSubmit">
 				Create Database User

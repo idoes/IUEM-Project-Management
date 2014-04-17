@@ -18,6 +18,7 @@
 
     <!-- Custom styles for this template -->
     <link href="../css/dashboard.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/assets/css/docs.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
 	
     <!-- Just for debugging purposes. Don't actually copy this line! -->
@@ -73,8 +74,6 @@
 EOT;
 			}
 		} else {
-			echo isset($_SESSION['ACCESS_LEVEL']) ? 'true' : 'false';
-			die();
 			header("Location: ../login.php?message=denied");			
 		}
 	?>
@@ -82,6 +81,19 @@ EOT;
     <li><a href="#">Manage Faculty</a></li-->
     <li><a href="createProject.php">Create Project</a></li>
     <li><a href="manageProjects.php">Manage Projects</a></li>
+    <?php
+		if(isset($_SESSION['ACCESS_LEVEL']))
+		{
+			if($_SESSION['ACCESS_LEVEL'] == 'SUPER_ADMIN')
+			{	
+			    	echo <<<EOT
+			 				    <li><a href="exportCSV.php?data=admin">D/L Admin CSV</a></li>
+							    <li><a href="exportCSV.php?data=faculty">D/L Faculty CSV</a></li>
+							    <li><a href="exportCSV.php?data=projects">D/L Projects CSV</a></li>   	
+EOT;
+			}
+		}
+?>
 </div>
 <div id='ajax-page-content'>
 <!-- // -->

@@ -67,69 +67,218 @@ function getUrlVars() {//credit http://papermashup.com/read-url-get-variables-wi
 	return vars;
 }
 
-function validateUserPanel() {
-	var goodInput = true;
-	if ($("#firstname").val().length <= 0) {
-		$('.form-group').eq(0).addClass("has-error");
-		goodInput = false;
+function validateCreateFaculty()
+{
+	var isOk = true;
+	
+	if ($("#firstname").val() == "") {
+		isOk = false;
+		$("#firstname").parent().parent().addClass("has-error");
 	}
 
-	if ($("#lastname").val().length <= 0) {
-		$('.form-group').eq(2).addClass("has-error");
-		goodInput = false;
+	if ($("#lastname").val() == "") {
+		isOk = false;
+		$("#lastname").parent().parent().addClass("has-error");
 	}
 
-	if ($("#email").val().length <= 0) {
-		$('.form-group').eq(3).addClass("has-error");
-		goodInput = false;
+	if (!validateEmail($("#email").val())) {
+		isOk = false;
+		$("#email").parent().parent().addClass("has-error");
 	}
+	
+	if(isOk) { $("#post_form").submit(); }
 
-	if (goodInput) {
-		$('#create-user-post').submit();
-	}
 }
 
-// function loadPage(_page) {
-	// //pass one of the following strings as _page
-	// //create-user
-	// //manage-users
-	// //create-admin
-	// //manage-admins
-	// //create-project
-	// //manage-projects
-	// //profile
-	// //help
-// 
-	// xmlhttp = new XMLHttpRequest();
-// 
-	// if (_page == 'create-user') {
-		// xmlhttp.open("GET", "php/ajax_content.php?ajaxID=create-user", true);
-	// } else if (_page == 'manage-users') {
-		// xmlhttp.open("GET", "php/ajax_content.php?ajaxID=manage-users", true);
-	// } else if (_page == 'create-admin') {
-		// xmlhttp.open("GET", "php/ajax_content.php?ajaxID=create-admin", true);
-	// } else if (_page == 'manage-admins') {
-		// xmlhttp.open("GET", "php/ajax_content.php?ajaxID=manage-admins", true);
-	// } else if (_page == 'create-project') {
-		// xmlhttp.open("GET", "php/ajax_content.php?ajaxID=create-project", true);
-	// } else if (_page == 'manage-projects') {
-		// xmlhttp.open("GET", "php/ajax_content.php?ajaxID=manage-projects", true);
-	// } else if (_page == 'profile') {
-		// xmlhttp.open("GET", "php/ajax_content.php?ajaxID=profile", true);
-	// } else if (_page == 'help') {
-		// xmlhttp.open("GET", "php/ajax_content.php?ajaxID=help", true);
+function validateEditSingleProject()
+{
+	var isOk = true;
+	if($("#projecttitle").val() == "")
+	{
+		isOk = false;
+		$("#projecttitle").parent().parent().addClass("has-error");
+	}
+	
+	if(!isValidDate($("#startdate").val()))
+	{
+		isOk = false;
+		$("#startdate").parent().parent().addClass("has-error");
+	}
+	
+	if(!$("#enddate").val() == "")
+	{
+		if(!isValidDate($("#enddate").val()))
+		{
+			isOk = false;
+			$("#enddate").parent().parent().addClass("has-error");
+		}
+	}
+	
+	if(!isValidDate($("#projectInspectorStartDate").val()))
+	{
+		isOk = false;
+		$("#projectInspectorStartDate").parent().parent().addClass("has-error");
+	}
+	
+	if(isOk) { $("#post_form").submit(); }
+}
+
+function validateEditSingleFaculty()
+{
+	var isOk = true;
+	
+	if (!validateEmail($("#username").val())) {
+		isOk = false;
+		$("#username").parent().parent().addClass("has-error");
+	}
+	if ($("#userpassword").val() == "") {
+		isOk = false;
+		$("#userpassword").parent().parent().addClass("has-error");
+	}
+	if ($("#firstname").val() == "") {
+		isOk = false;
+		$("#firstname").parent().parent().addClass("has-error");
+	}
+	if ($("#lastname").val() == "") {
+		isOk = false;
+		$("#lastname").parent().parent().addClass("has-error");
+	}
+	//uncomment if need to check
+	// if ($("#middlename").val() == "") {
+		// isOk = false;
+		// $("#middlename").parent().addClass("has-error");
 	// }
-// 
-	// xmlhttp.send();
-// 
-	// xmlhttp.onreadystatechange = function() {
-		// if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-			// document.getElementById("ajax-page-content").innerHTML = xmlhttp.responseText;
-			// createCalendar();
-			// init();
-		// }
+	// if (!validateEmail($("#email").val())) {
+		// isOk = false;
+		// $("#email").parent().addClass("has-error");
 	// }
-// }
+	// if ($("#title").val() == "") {
+		// isOk = false;
+		// $("#title").parent().addClass("has-error");
+	// }
+	// if ($("#position").val() == "") {
+		// isOk = false;
+		// $("#position").parent().addClass("has-error");
+	// }
+	// if ($("#officelocation").val() == "") {
+		// isOk = false;
+		// $("#officelocation").parent().addClass("has-error");
+	// }
+// 	
+	// if ($("#biotext").val() == "") {
+		// isOk = false;
+		// $("#biotext").parent().addClass("has-error");
+	// }
+	// if ($("#biophotolink").val() == "") {
+		// isOk = false;
+		// $("#biophotolink").parent().addClass("has-error");
+	// }
+	// if ($("#cvfilelink").val() == "") {
+		// isOk = false;
+		// $("#cvfilelink").parent().addClass("has-error");
+	// }
+	
+	if(isOk) { $("#post_form").submit(); }
+
+}
+
+function validateCreateAdminUser()
+{
+	var isOk = true;
+	
+	if ($("#firstname").val() == "") {
+		isOk = false;
+		$("#firstname").parent().parent().addClass("has-error");
+	}
+
+	if ($("#lastname").val() == "") {
+		isOk = false;
+		$("#lastname").parent().parent().addClass("has-error");
+	}
+
+	if (!validateEmail($("#email").val())) {
+		isOk = false;
+		$("#email").parent().parent().addClass("has-error");
+	}
+	
+	if(isOk) { $("#post_form").submit(); }
+}
+
+function validateEditSingleAdmin()
+{
+	var isOk = true;
+	
+	if ($("#firstname").val() == "") {
+		isOk = false;
+		$("#firstname").parent().parent().addClass("has-error");
+	}
+
+	if ($("#userpassword").val() == "") {
+		isOk = false;
+		$("#userpassword").parent().parent().addClass("has-error");
+	}
+	
+	if ($("#lastname").val() == "") {
+		isOk = false;
+		$("#lastname").parent().parent().addClass("has-error");
+	}
+
+	if (!validateEmail($("#username").val())) {
+		isOk = false;
+		$("#username").parent().parent().addClass("has-error");
+	}
+	
+	if(isOk) { $("#post_form").submit(); }
+}
+
+function validateCreateProject()
+{
+	var isOk = true;
+	if($("#projecttitle").val() == "")
+	{
+		isOk = false;
+		$("#projecttitle").parent().parent().addClass("has-error");
+	}
+	
+	if(!isValidDate($("#startdate").val()))
+	{
+		isOk = false;
+		$("#startdate").parent().parent().addClass("has-error");
+	}
+	
+	if(!$("#enddate").val() == "")
+	{
+		if(!isValidDate($("#enddate").val()))
+		{
+			isOk = false;
+			$("#enddate").parent().parent().addClass("has-error");
+		}
+	}
+	
+	if ($("#projectInspector").val() == "") {
+		isOk = false;
+		$("#projectInspector").parent().parent().addClass("has-error");
+	}
+	
+	if(!isValidDate($("#projectInspectorStartDate").val()))
+	{
+		isOk = false;
+		$("#projectInspectorStartDate").parent().parent().addClass("has-error");
+	}
+	
+	if(isOk) { $("#post_form").submit(); }
+}
+
+function isValidDate(date)
+{
+    var matches = /^(\d{4})[-\/](\d{2})[-\/](\d{2})$/.exec(date);
+    if (matches == null)
+    {
+    	return false;
+    } else {
+    	return true;
+    }
+}
 
 function showHint(str) {
 	var xmlhttp;
@@ -151,3 +300,8 @@ function showHint(str) {
 	xmlhttp.open("GET", "inc/pullFaculty.php?q=" + str, true);
 	xmlhttp.send();
 }
+
+function validateEmail(email) { 
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+} 

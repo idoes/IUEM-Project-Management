@@ -38,13 +38,13 @@
 	 * PHP - Page Initialization
 	***********************************************************************/
 	$interactiveMessage = "";
-	$facultyXMLID 		= "";
+	$facultyID 		= "";
 	
 	$facultyID 			= "";
 	$userName			= "";
 	$userPassword		= "";
-	$firstAccessDate	= "";
-	$lastAccessDate 	= "";
+	//$firstAccessDate	= "";
+	//$lastAccessDate 	= "";
 	$firstName 			= "";
 	$lastName			= "";
 	$middleName 		= "";
@@ -63,7 +63,7 @@
 	/********************************************************************
 	 * PHP - form is submitted
 	***********************************************************************/
-	if(isset($_POST['formSubmit']))
+	if($_SERVER['REQUEST_METHOD'] === 'POST')
 	{
 		//test
 		//echo "<br>This is After Submit";
@@ -71,22 +71,22 @@
 		/*************************************************************
 		 * Input trimming
 		*************************************************************/
-		$userName			= trim($_POST['username']);
-		$userPassword		= trim($_POST['userpassword']);
-		$firstAccessDate	= trim($_POST['firstaccessdate']);
-		$lastAccessDate 	= trim($_POST['lastaccessdate']);
-		$firstName 			= trim($_POST['firstname']);
-		$lastName			= trim($_POST['lastname']);
-		$middleName 		= trim($_POST['middlename']);
-		$email				= trim($_POST['email']);
-		$title				= trim($_POST['title']);
-		$position			= trim($_POST['position']);
-		$officeLocation		= trim($_POST['officeLocation']);
-		$bioText			= trim($_POST['biotext']);
-		$bioPhotoLink		= trim($_POST['biophotolink']);
-		$cvFileLink			= trim($_POST['cvfilelink']);
+		$userName			= mysql_escape_string(trim($_POST['username']));
+		$userPassword		= mysql_escape_string(trim($_POST['userpassword']));
+		//$firstAccessDate	= trim($_POST['firstaccessdate']);
+		//$lastAccessDate 	= trim($_POST['lastaccessdate']);
+		$firstName 			= mysql_escape_string(trim($_POST['firstname']));
+		$lastName			= mysql_escape_string(trim($_POST['lastname']));
+		$middleName 		= mysql_escape_string(trim($_POST['middlename']));
+		$email				= mysql_escape_string(trim($_POST['email']));
+		$title				= mysql_escape_string(trim($_POST['title']));
+		$position			= mysql_escape_string(trim($_POST['position']));
+		$officeLocation		= mysql_escape_string(trim($_POST['officeLocation']));
+		$bioText			= mysql_escape_string(trim($_POST['biotext']));
+		$bioPhotoLink		= mysql_escape_string(trim($_POST['biophotolink']));
+		$cvFileLink			= mysql_escape_string(trim($_POST['cvfilelink']));
 		//$activationCode		= trim($_POST['activationcode']);
-		$isActivated		= trim($_POST['isactivated']);
+		$isActivated		= mysql_escape_string(trim($_POST['isactivated']));
 		
 		
 		//TODO
@@ -206,9 +206,7 @@
 					UserName 		= '$userName',
 					UserPassword 	= '$userPassword',
 					ActivationCode 	= '$activationCode',
-					IsActive 		= '$isActivated',
-					FirstAccessDate = '$firstAccessDate',
-					LastAccessDate 	= '$lastAccessDate'
+					IsActive 		= '$isActivated'
 				WHERE UserName = '$userName';";
 				$resultUpdateFaculty = mysql_query($sqlUpgradeFaculty, $conn) or die(mysql_error());
 				if($resultUpdateFaculty)
@@ -217,7 +215,7 @@
 		 							You will be directed to the manage faculty page in 3 seconds.<br>
 		 							Please do not perform any action on this page.";
 					//TODO uncomment the following statement
-					header('Refresh: 3; URL=dashboard.php');
+					header('Refresh: 3; URL=manageFaculty.php');
 				}
 				else
 				{
@@ -232,46 +230,44 @@
 	/********************************************************************
 	 * Query String variable is set
 	***********************************************************************/
-	if(isset($_GET['facultyXMLID']))
+	if(isset($_GET['facultyID']))
 	{
 		/*************************************************************
 		 * fetch facultyID by given faculty XML ID and parsing XML file
 		*************************************************************/
-		$facultyXMLID = $_GET['facultyXMLID'];
-		$facultyRecord = simplexml_load_file('xml/Table-Solo-Faculty.xml');
-		for($i = 0; $i < count($facultyRecord); $i++)
-		{
-			if($i == $facultyXMLID)
-			{
-				$facultyID = $facultyRecord->FacultyInstance[$i]->FacultyID;
-			}
-		}
-		
+		$facultyID = $_GET['facultyID'];
+
+		$result = mysql_query("SELECT * FROM A_FACULTY WHERE FacultyID = ".$facultyID.";", $conn) or die(mysql_error());
+
 		/*************************************************************
 		 * fetch all values by given Faculty ID and parsing XML file
 		*************************************************************/
-		foreach ($facultyRecord as $index)
-		{
-			if ($index == $facultyID)
-			{
-				$userName			= $index->UserName;
-				$userPassword		= $index->UserPassword;
-				$firstAccessDate	= $index->FirstAccessDate;
-				$lastAccessDate 	= $index->LastAccessDate;
-				$firstName 			= $index->FirstName;
-				$lastName			= $index->LastName;
-				$middleName 		= $index->MiddleName;
-				$email				= $index->Email;
-				$title				= $index->Title;
-				$position			= $index->Position;
-				$officeLocation		= $index->OfficeLocation;
-				$bioText			= $index->BioText;
-				$bioPhotoLink		= $index->BioPhotoLink;
-				$cvFileLink			= $index->CVFileLink;
-				$activationCode		= $index->ActivationCode;
-				$isActivated		= $index->IsActive;
-			}
-		}//END foreach ($adminRecord as $index)
+		
+		if(mysql_num_rows($result) != 1) {
+			echo "<div class='col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main'>Fatal Error:  Faculty with ID ".$facultyID." was not found!</div>";
+			header("Refresh: 10; URL=manageFaculty.php");
+			die();
+		} else {
+			//query for current info
+			$row = mysql_fetch_assoc($result);
+			
+			$userName			= $row['UserName'];
+			$userPassword		= $row['UserPassword'];
+			$firstName 			= $row['FirstName'];
+			$lastName			= $row['LastName'];
+			$middleName 		= $row['MiddleName'];
+			$email				= $row['Email'];
+			$title				= $row['Title'];
+			$position			= $row['Position'];
+			$officeLocation		= $row['OfficeLocation'];
+			$bioText			= $row['BioText'];
+			$bioPhotoLink		= $row['BioPhotoLink'];
+			$cvFileLink			= $row['CVFileLink'];
+			$activationCode		= $row['ActivationCode'];
+			$isActivated		= $row['IsActive'];
+		}
+
+
 	}
 ?>
 
@@ -283,7 +279,7 @@
 </div>
     
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-<form action="editSingleFaculty.php" class="form-horizontal" role="form" method="post">
+<form id="post_form" action="editSingleFaculty.php" class="form-horizontal" role="form" method="post">
 	<!-- screen out interative message which is deliverd from server. -->
 	<?php 
 	//screen out the issues at the top of page
@@ -297,42 +293,28 @@
 	}
 	$interactiveMessage = "";
 	?>
-	<div class="form-group">
+	<div class="form-group has-warning">
 		<label for="username" class="col-sm-2 control-label">User Name:</label>
 		<div class="col-sm-6">
 			<input type="text" class="form-control" id="username" placeholder="" name="username" 
 				value="<?php echo $userName; ?>">
 		</div>
 	</div>
-	<div class="form-group">
+	<div class="form-group has-warning">
 		<label for="userpassword" class="col-sm-2 control-label">User Password:</label>
 		<div class="col-sm-6">
-			<input type="text" class="form-control" id="lastname" placeholder="" name="userpassword"
+			<input type="text" class="form-control" id="userpassword" placeholder="" name="userpassword"
 				value="<?php echo $userPassword; ?>">
 		</div>
 	</div>
-	<div class="form-group">
-		<label for="firstaccessdate" class="col-sm-2 control-label">First Access Date:</label>
-		<div class="col-sm-6">
-			<input type="text" class="form-control" id="firstaccessdate" placeholder="" name="firstaccessdate"
-				value="<?php echo $firstAccessDate; ?>" disabled>
-		</div>
-	</div>
-	<div class="form-group">
-		<label for="lastaccessdate" class="col-sm-2 control-label">Last Access Date:</label>
-		<div class="col-sm-6">
-			<input type="text" class="form-control" id="lastaccessdate" placeholder="" name="lastaccessdate"
-				value="<?php echo $lastAccessDate; ?>" disabled>
-		</div>
-	</div>
-	<div class="form-group">
+	<div class="form-group has-warning">
 		<label for="firstname" class="col-sm-2 control-label">First Name:</label>
 		<div class="col-sm-6">
 			<input type="text" class="form-control" id="firstname" placeholder="" name="firstname"
 				value="<?php echo $firstName; ?>">
 		</div>
 	</div>
-	<div class="form-group">
+	<div class="form-group has-warning">
 		<label for="lastname" class="col-sm-2 control-label">Last Name:</label>
 		<div class="col-sm-6">
 			<input type="text" class="form-control" id="lastname" placeholder="" name="lastname"
@@ -396,7 +378,7 @@
 		</div>
 	</div>
 
-	<div class="form-group">
+	<div class="form-biotextgroup">
 		<label for="isactivated" class="col-sm-2 control-label">Activated:</label>
 		<div class="col-sm-6">
 			<input type="radio" name="isactivated" value="YES" <?php if($isActivated == "YES"){echo 'checked';}?>>YES&nbsp;
@@ -407,7 +389,7 @@
 		<div class="col-sm-offset-1 col-sm-10">
 			<br/>
 			<!-- use input instead button -->
-			<input type="submit" class='btn btn-primary' name="formSubmit" value="Update" />
+			<input type="button" onclick="validateEditSingleFaculty();" class='btn btn-primary' name="formSubmit" value="Update" />
 			<!--  
 			<button type="submit" class="btn btn-primary" name="formSubmit">
 				Create Database User

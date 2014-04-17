@@ -30,34 +30,7 @@
 	$sql = "SELECT * FROM A_ADMIN;";
 	//send the query to the database or quit if cannot connect || hold the result set
 	$result = mysql_query($sql, $conn) or die(mysql_error());
-	//test
-	//print_r($result);
-	//initialize variable which will store out xml code
-	$xml = new SimpleXMLElement('<xml/>');
-	//parse results into XML format
-	// ProjectID Title Abstract InitialDate LongText CloseDate
-	while($row = mysql_fetch_assoc($result))
-	{
-		$AdminInstance = $xml->addChild('AdminInstance');
-		$AdminInstance->addChild('AdminID', $row['AdminID']);
-		$AdminInstance->addChild('Email', $row['Email']);
-		$AdminInstance->addChild('Password', $row['Password']);
-		$AdminInstance->addChild('FirstAccessDate', $row['FirstAccessDate']);
-		$AdminInstance->addChild('LastAccessDate', $row['LastAccessDate']);
-		$AdminInstance->addChild('FirstName', $row['FirstName']);
-		$AdminInstance->addChild('LastName', $row['LastName']);
-		$AdminInstance->addChild('MiddleName', $row['MiddleName']);
-		$AdminInstance->addChild('ActivationCode', $row['ActivationCode']);
-		$AdminInstance->addChild('IsActive', $row['IsActive']);
-	
-	}//end while ($row = mysql_fetch_assoc($result))
-	
-	/*************************************************************
-	 * write $xml variable to a file on the server
-	*************************************************************/
-	$fp = fopen("xml/Table-Solo-Admin.xml","wb");
-	fwrite($fp, $xml->asXML());
-	fclose($fp);
+
 echo <<<EOT
  <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
       <!-- TODO use session variable to get user's full name -->
@@ -89,29 +62,25 @@ echo <<<EOT
 EOT;
 						//TODO
 						//Add for loop to go through user DB and print out tr/td info
-						$adminRecord = simplexml_load_file('xml/Table-Solo-Admin.xml');
-						$i = -1;
-						foreach ($adminRecord as $index)
+						$i = 0;
+						while($row = mysql_fetch_assoc($result))
 						{
 							//get the index for this associated array
 							$i++;
 							//prepare for query string
-							$get = $_GET;
-							$get['AdminXMLID'] = $i;
-							$theQueryString = http_build_query($get);
 							print <<<HERE
 							<tr>
-								<td>$index->AdminID</td>
-								<td>$index->FirstName</td>
-								<td>$index->LastName</td>
-								<td>$index->MiddleName</td>
-								<td>$index->Email</td>
-								<td>$index->Password</td>
-								<td><button type="button" class="btn btn-primary btn-xs" onclick="window.location='validate.php?theQueryString={$index->ActivationCode}'">Verify</td></td>
-								<td>$index->IsActive</td>
-								<td>$index->FirstAccessDate</td>
-								<td>$index->LastAccessDate</td>
-								<td><button type="button" class="btn btn-primary btn-xs" onclick="window.location='editSingleAdmin.php?$theQueryString'">Edit</td>
+								<td>{$row['AdminID']}</td>
+								<td>{$row['FirstName']}</td>
+								<td>{$row['LastName']}</td>
+								<td>{$row['MiddleName']}</td>
+								<td>{$row['Email']}</td>
+								<td>{$row['Password']}</td>
+								<td><button type="button" class="btn btn-primary btn-xs" onclick="window.location='validate.php?theQueryString={$row['ActivationCode']}'">Verify</td></td>
+								<td>{$row['IsActive']}</td>
+								<td>{$row['FirstAccessDate']}</td>
+								<td>{$row['LastAccessDate']}</td>
+								<td><button type="button" class="btn btn-primary btn-xs" onclick="window.location='editSingleAdmin.php?adminID={$row['AdminID']}'">Edit</td>
 							</tr>
 HERE;
 							//test

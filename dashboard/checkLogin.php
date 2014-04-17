@@ -19,22 +19,23 @@
 		
 		if($user_type === 'faculty')
 		{
-			$result = mysql_query(" SELECT *
-									FROM A_FACULTY
-									WHERE UserName = '".$email."'
-									AND UserPassword = '".$password."'
-									AND IsActive = 'YES'
-									LIMIT 1;", $conn) or die(mysql_error());
+			// $result = mysql_query(" SELECT *
+									// FROM A_FACULTY
+									// WHERE UserName = '".$email."'
+									// AND UserPassword = '".$password."'
+									// AND IsActive = 'YES'
+									// LIMIT 1;", $conn) or die(mysql_error());
 									
-			//$result = mysql_query(" CALL SP_CCC('".$email."','".$password."')", $conn) or die(mysql_error());
+			$result = mysql_query("CALL SP_CHECK_FACULTY_LOGIN('".$email."','".$password."', @_FACULTY_ID, @_FIRST_NAME, @_LAST_NAME);", $conn) or die(mysql_error());
+			$result = mysql_query("SELECT @_FACULTY_ID,@_FIRST_NAME,@_LAST_NAME;");
 			
-			$num_result = mysql_num_rows($result);
 			$result = mysql_fetch_array($result);
-			if ($num_result==1)
+
+			if ($result['@_FACULTY_ID'] != -1)
 			{
-				$_SESSION['UID'] = $result['FacultyID']; 	
-				$_SESSION['EMAIL'] = $result['Email'];		
-				$_SESSION['FULL_NAME'] = $result['FirstName']." ".$result['LastName'];
+				$_SESSION['UID'] = $result['@_FACULTY_ID']; 	
+				$_SESSION['EMAIL'] = $email;		
+				$_SESSION['FULL_NAME'] = $result['@_FIRST_NAME']." ".$result['@_LAST_NAME'];
 				$_SESSION['ACCESS_LEVEL'] = "FACULTY";
 				
 				$checkFirst = mysql_query("SELECT FirstAccessDate FROM `A_FACULTY` WHERE FacultyID = ".$_SESSION['UID'].";", $conn) or die(mysql_error());
@@ -59,22 +60,24 @@
 		}
 		else if($user_type === 'admin')
 		{
-			$result = mysql_query(" SELECT *
-									FROM A_ADMIN
-									WHERE Email = '".$email."'
-									AND Password = '".$password."'
-									AND IsActive = 'YES'
-									LIMIT 1;", $conn) or die(mysql_error());
+			// $result = mysql_query(" SELECT *
+									// FROM A_ADMIN
+									// WHERE Email = '".$email."'
+									// AND Password = '".$password."'
+									// AND IsActive = 'YES'
+									// LIMIT 1;", $conn) or die(mysql_error());
 									
-			//$result = mysql_query(" CALL SP_DDD('".$email."','".$password."')", $conn) or die(mysql_error());						
-			
+			$result = mysql_query("CALL SP_CHECK_ADMIN_LOGIN('".$email."','".$password."', @_ADMIN_ID, @_FIRST_NAME, @_LAST_NAME);", $conn) or die(mysql_error());
+			$result = mysql_query("SELECT @_ADMIN_ID,@_FIRST_NAME,@_LAST_NAME;");
+						
 			$num_result = mysql_num_rows($result);
 			$result = mysql_fetch_array($result);
-			if ($num_result==1)
+						
+			if ($result['@_ADMIN_ID'] != -1)
 			{
-				$_SESSION['UID'] = $result['AdminID']; 	
-				$_SESSION['EMAIL'] = $result['Email'];		
-				$_SESSION['FULL_NAME'] = $result['FirstName']." ".$result['LastName'];
+				$_SESSION['UID'] = $result['@_ADMIN_ID']; 	
+				$_SESSION['EMAIL'] = $email;		
+				$_SESSION['FULL_NAME'] = $result['@_FIRST_NAME']." ".$result['@_LAST_NAME'];
 				$_SESSION['ACCESS_LEVEL'] = "SUPER_ADMIN";
 				
 				$checkFirst = mysql_query("SELECT FirstAccessDate FROM `A_ADMIN` WHERE AdminID = ".$_SESSION['UID'].";", $conn) or die(mysql_error());

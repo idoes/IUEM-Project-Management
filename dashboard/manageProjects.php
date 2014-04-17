@@ -17,9 +17,7 @@ echo <<<EOT
 							<th>Project Title</th>
 							<th>Created On</th>
 							<th>PI</th>
-							<th>Faculty Options</th>
-							<th>Add Files</th>
-							<th>Edit</th>
+							<th>View Project</th>
 							<th>Delete</th>
 						</tr>
 					</thead>
@@ -27,8 +25,44 @@ echo <<<EOT
 EOT;
 	//TODO
 	//Add for loop to go through project DB and print out tr/td info
-	$result = mysql_query(" SELECT *
-							FROM A_PROJECT;");
+	if($_SESSION['ACCESS_LEVEL'] === "FACULTY") {
+		$result = mysql_query(" SELECT ProjectID FROM A_RESEARCH WHERE FacultyID = ".$_SESSION['UID'], $conn) or die(mysql_error());
+		
+		$projects_part_of = array();
+		$num_projects_part_of = mysql_num_rows($result);
+		$i=0;
+		while($row = mysql_fetch_assoc($result)){
+			$projects_part_of[$i] = $row['ProjectID'];
+			$i++;
+		}
+		
+		$result = mysql_query(" SELECT ProjectID FROM A_MANAGEMENT WHERE FacultyID = ".$_SESSION['UID'], $conn) or die(mysql_error());
+		
+		$num_projects_part_of = mysql_num_rows($result);
+		
+		while($row = mysql_fetch_assoc($result)){
+			$projects_part_of[$i] = $row['ProjectID'];
+			$i++;
+		}
+		
+		$sql = " SELECT * FROM A_PROJECT WHERE";
+		
+		for($i = 0; $i < count($projects_part_of); $i++) {
+			if($i!=(count($projects_part_of)-1))
+			{
+				$sql.= " ProjectID = " .$projects_part_of[$i]. " OR";
+			} else {
+				$sql.= " ProjectID = " .$projects_part_of[$i]. ";";
+			}
+		}
+		
+		$result = mysql_query($sql, $conn) or die(mysql_error());
+		
+	} else {
+		$result = mysql_query(" SELECT *
+								FROM A_PROJECT;", $conn) or die(mysql_error());
+	}
+		
 
 	$num_rows = mysql_num_rows($result);
 	
@@ -65,9 +99,7 @@ EOT;
 		} else {
 			echo "<td>PI Not Set</td>";	
 		}
-		echo "<td><button type='button' class='btn btn-primary btn-xs' onclick=window.location='editAssociatedFaculty.php?projectID=$project_id'>Add/Remove Faculty</button></td>";
-		echo "<td><button type='button' class='btn btn-primary btn-xs' onclick=window.location='fileUpload.php?projectID=$project_id'>Add Files</button></td>";
-		echo "<td><button type='button' class='btn btn-primary btn-xs' onclick=window.location='editSingleProject.php?projectID=$project_id'>Edit Project</button></td>"; 
+		echo "<td><button type='button' class='btn btn-primary btn-xs' onclick=window.location='viewProject.php?projectID=$project_id'>View Project</button></td>"; 
 		echo "<td><button type='button' class='btn btn-danger btn-xs' onclick=window.location='deleteProject.php?projectID=$project_id'>Delete Project</button></td>";
 		$i++;
 	}

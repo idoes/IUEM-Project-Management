@@ -1,74 +1,6 @@
 <?php
 	require_once("dbconnect.php");
 	include_once('php/header.php');
-	//TODO
-	/*************************************************************
-	 * DB activity - Check SESSION vaiable against DB.ADMIN
-	*************************************************************/
-	
-	
-	/********************************************************************
-	 * Reference - Datbase Faculty Attribute name
-	***********************************************************************/
-	/*
-	 * FacultyID,
-		FirstName,
-		LastName,
-		MiddleName,
-		Email,
-		Title,
-		Position,
-		OfficeLocation,
-		BioText,
-		BioPhotoLink,
-		CVFileLink,
-		UserName,
-		UserPassword,
-		ActivationCode,
-		IsActive,
-		FirstAccessDate,
-		LastAccessDate
-	*/
-	
-	
-	
-	
-	
-	/*************************************************************
-	 * DB activity - Fetch record from DB.ADMIN and build related XML
-	*************************************************************/
-	$sql = "SELECT * FROM A_FACULTY;";
-	$result = mysql_query($sql, $conn) or die(mysql_error());
-	$xml = new SimpleXMLElement('<xml/>');
-	while($row = mysql_fetch_assoc($result))
-	{
-		$facultyInstance = $xml->addChild('FacultyInstance');
-		$facultyInstance->addChild('FacultyID', 		$row['FacultyID']);
-		$facultyInstance->addChild('FirstName', 		$row['FirstName']);
-		$facultyInstance->addChild('LastName',	 		$row['LastName']);
-		$facultyInstance->addChild('MiddleName', 		$row['MiddleName']);
-		$facultyInstance->addChild('Email', 			$row['Email']);
-		$facultyInstance->addChild('Title', 			$row['Title']);
-		$facultyInstance->addChild('Position', 			$row['Position']);
-		$facultyInstance->addChild('OfficeLocation', 	$row['OfficeLocation']);
-		$facultyInstance->addChild('BioText', 			$row['BioText']);
-		$facultyInstance->addChild('BioPhotoLink', 		$row['BioPhotoLink']);
-		$facultyInstance->addChild('CVFileLink', 		$row['CVFileLink']);
-		$facultyInstance->addChild('UserName', 			$row['UserName']);
-		$facultyInstance->addChild('UserPassword', 		$row['UserPassword']);
-		$facultyInstance->addChild('ActivationCode', 	$row['ActivationCode']);
-		$facultyInstance->addChild('IsActive', 			$row['IsActive']);
-		$facultyInstance->addChild('FirstAccessDate', 	$row['FirstAccessDate']);
-		$facultyInstance->addChild('LastAccessDate', 	$row['LastAccessDate']);
-	
-	}//end while ($row = mysql_fetch_assoc($result))
-	
-	/*************************************************************
-	 * write $xml variable to a file on the server
-	*************************************************************/
-	$fp = fopen("xml/Table-Solo-Faculty.xml","wb");
-	fwrite($fp, $xml->asXML());
-	fclose($fp);
 
 echo <<<EOT
 <!--********************************************************************
@@ -103,30 +35,26 @@ echo <<<EOT
 EOT;
 						//TODO
 						//Add for loop to go through user DB and print out tr/td info
-						$facultyRecord = simplexml_load_file('xml/Table-Solo-Faculty.xml');
-						$i = -1;
-						foreach ($facultyRecord as $index)
+						$i = 0;
+						
+						$sql = "SELECT * FROM A_FACULTY;";
+						$result = mysql_query($sql, $conn) or die(mysql_error());
+						while($row = mysql_fetch_assoc($result))
 						{
-							//get the index for this associated array
 							$i++;
-							//prepare for query string
-							$get = $_GET;
-							$get['facultyXMLID'] = $i;
-							$theQueryString = http_build_query($get);
-							$id = $i+1;
 							print <<<HERE
 							<tr>
-								<td>$id</td>
-								<td>$index->FirstName</td>
-								<td>$index->LastName</td>
-								<td>$index->MiddleName</td>
-								<td>$index->UserName</td>
-								<td>$index->UserPassword</td>
-								<td><button type="button" class="btn btn-primary btn-xs" onclick="window.location='validate.php?theQueryString={$index->ActivationCode}'">Verify</td>
-								<td>$index->IsActive</td>
-								<td>$index->FirstAccessDate</td>
-								<td>$index->LastAccessDate</td>
-								<td><button type="button" class="btn btn-primary btn-xs" onclick="window.location='editSingleFaculty.php?$theQueryString'">Edit</td></td>
+								<td>$i</td>
+								<td>{$row['FirstName']}</td>
+								<td>{$row['LastName']}</td>
+								<td>{$row['MiddleName']}</td>
+								<td>{$row['UserName']}</td>
+								<td>{$row['UserPassword']}</td>
+								<td><button type="button" class="btn btn-primary btn-xs" onclick="window.location='validate.php?theQueryString={$row['ActivationCode']}'">Verify</td>
+								<td>{$row['IsActive']}</td>
+								<td>{$row['FirstAccessDate']}</td>
+								<td>{$row['LastAccessDate']}</td>
+								<td><button type="button" class="btn btn-primary btn-xs" onclick="window.location='editSingleFaculty.php?facultyID={$row['FacultyID']}'">Edit</td></td>
 							</tr>
 HERE;
 						

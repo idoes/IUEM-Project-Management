@@ -1,11 +1,23 @@
 <?php
 	include_once('dbconnect.php');
-	include_once('./php/header.php');
+	include_once('./php/header.php' );
 
-	$first_name = explode(" ",$_GET['facultyName']);
-	$first_name = $first_name[0];
-	$last_name = explode(" ",$_GET['facultyName']);
-	$last_name = $last_name[1];
+	function exception_error_handler($errno, $errstr, $errfile, $errline ) {
+		throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+	}
+	
+	set_error_handler("exception_error_handler");
+
+		try {
+		$first_name = explode(" ",$_GET['facultyName']);
+		$first_name = $first_name[0];
+		$last_name = explode(" ",$_GET['facultyName']);
+		$last_name = $last_name[1];
+	} catch (Exception $e) {
+		echo "<div class='col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main'>Fatal Error:  Cannot add Faculty with name ".$_GET['facultyName'].".</div>";
+		header("Refresh: 3; URL=manageProjects.php");
+		die();
+	}
 
 	$projectID = $_GET['projectID'];
 

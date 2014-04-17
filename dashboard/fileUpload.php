@@ -201,7 +201,7 @@ EOT;
 		echo "<tr><td>".$i."</td>";
 		echo "<td>".$projectTitle."</td>";
 		echo "<td>".basename($row['ItemServerLink'])."</td>";
-		echo "<td><button type='button' class='btn btn-primary btn-xs' onclick=window.location='".$row['ItemServerLink']."'>Download</button></td>"; 
+		echo "<td><button type='button' class='btn btn-primary btn-xs' onclick=window.location='getFile.php?dir=".$row['ItemServerLink']."'>Download</button></td>"; 
 		echo "<td><button type='button' class='btn btn-danger btn-xs' onclick=window.location='deleteFile.php?attachmentID=".$row['AttachmentID']."'>Delete</button></td>";
 		echo "</tr>";
 		$i++;
